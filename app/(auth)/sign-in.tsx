@@ -140,7 +140,7 @@ export default function SignIn() {
             />
 
               {/* Forgot Password */}
-              <TouchableOpacity className="self-end mb-6">
+              <TouchableOpacity className="self-end mb-6 mt-2">
                 <Text className="text-blue-600 text-sm font-medium">Forgot Password?</Text>
               </TouchableOpacity>
 
@@ -155,32 +155,6 @@ export default function SignIn() {
                 <Text className="text-white text-center text-lg font-semibold">
                   {isLoading ? 'Signing In...' : 'Sign In'}
                 </Text>
-              </TouchableOpacity>
-
-              {/* Divider */}
-              <View className="flex-row items-center my-6">
-                <View className="flex-1 h-px bg-gray-300" />
-                <Text className="mx-4 text-gray-500 text-sm">or</Text>
-                <View className="flex-1 h-px bg-gray-300" />
-              </View>
-
-              {/* Social Sign In */}
-              <TouchableOpacity className="bg-white border border-gray-200 rounded-xl py-4 mb-4">
-                <View className="flex-row items-center justify-center">
-                  <Ionicons name="logo-google" size={20} color="#DB4437" />
-                  <Text className="text-gray-700 text-center text-lg font-medium ml-3">
-                    Continue with Google
-                  </Text>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity className="bg-white border border-gray-200 rounded-xl py-4">
-                <View className="flex-row items-center justify-center">
-                  <Ionicons name="logo-apple" size={20} color="#000000" />
-                  <Text className="text-gray-700 text-center text-lg font-medium ml-3">
-                    Continue with Apple
-                  </Text>
-                </View>
               </TouchableOpacity>
             </View>
 

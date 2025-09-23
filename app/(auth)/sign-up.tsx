@@ -1,4 +1,5 @@
 import InputField from '@/components/form/input-field';
+import PasswordStrengthBar from '@/components/form/password-strengthen-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
@@ -40,6 +41,11 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const error =
+    formData.confirmPassword.length > 0 && formData.confirmPassword !== formData.password
+      ? "Passwords do not match"
+      : undefined;
+
 
   const validateForm = () => {
     const newErrors: FormErrors = {};
@@ -118,7 +124,7 @@ export default function SignUp() {
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView className="flex-1">
-          <View className="flex-1 px-6 pt-8">
+          <View className="flex-1 px-6 pt-8 ">
             {/* Header */}
             <View className="items-center mb-8">
               <View className="w-16 h-16 bg-blue-600 rounded-2xl items-center justify-center mb-4">
@@ -132,8 +138,8 @@ export default function SignUp() {
 
             {/* Form */}
             <View className="flex-1">
-              <View className="flex-row space-x-3">
-                <View className="flex-1">
+              <View className="flex-row gap-4">
+                <View className="flex-1 ">
                   <InputField
                     label="First Name"
                     value={formData.firstName}
@@ -176,6 +182,8 @@ export default function SignUp() {
                 onRightIconPress={() => setShowPassword(!showPassword)}
                 error={errors.password}
               />
+              <PasswordStrengthBar password={formData.password}/>
+              
 
               <InputField
                 label="Confirm Password"
@@ -187,7 +195,10 @@ export default function SignUp() {
                 rightIcon={showConfirmPassword ? "eye-off-outline" : "eye-outline"}
                 onRightIconPress={() => setShowConfirmPassword(!showConfirmPassword)}
                 error={errors.confirmPassword}
+
               />
+              {error && <Text className="text-red-500 text-xs mt-1">{error}</Text>}
+
 
               {/* Sign Up Button */}
               <TouchableOpacity

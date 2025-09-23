@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import PasswordStrengthBar from "./password-strengthen-bar";
 
 type InputFieldProps = {
   label: string;
@@ -18,6 +19,7 @@ type InputFieldProps = {
   icon: keyof typeof Ionicons.glyphMap;
   rightIcon?: keyof typeof Ionicons.glyphMap;
   onRightIconPress?: () => void;
+
 };
 
 const InputField = ({
@@ -29,12 +31,13 @@ const InputField = ({
   keyboardType = "default",
   error,
   icon,
+
   rightIcon,
   onRightIconPress,
 }: InputFieldProps) => {
   return (
-    <View className="mb-4">
-      <Text className="text-gray-700 text-sm font-medium mb-2">{label}</Text>
+    <View className={`${label === "First Name" || label === "Last Name" ? "mt-0" : "mt-4"}`}>
+        <Text className="text-gray-700 text-sm font-medium mb-2">{label} <Text className="text-red-600">*</Text></Text>
       <View className="relative flex flex-row items-center">
         <Ionicons
           name={icon}
@@ -62,6 +65,7 @@ const InputField = ({
         )}
       </View>
       {error && <Text className="text-red-500 text-xs mt-1">{error}</Text>}
+      
     </View>
   );
 };
