@@ -24,3 +24,12 @@ export const login = async (data: { email: string; password: string }) => {
     throw error.response?.data || { message: "Something went wrong" };
   }
 };
+export const verifyOTP = async (payload:any) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/verify`, payload)
+    return response.data;
+  } catch (error:any) {
+    throw error.response?.data || { message: "Something went wrong" };
+  }
+
+}

@@ -31,7 +31,6 @@ const InputField = ({
   keyboardType = "default",
   error,
   icon,
-
   rightIcon,
   onRightIconPress,
 }: InputFieldProps) => {
@@ -56,6 +55,8 @@ const InputField = ({
           secureTextEntry={secureTextEntry}
           keyboardType={keyboardType}
           autoCapitalize="none"
+          textContentType="oneTimeCode"
+          autoComplete="off"
           autoCorrect={false}
         />
         {rightIcon && (

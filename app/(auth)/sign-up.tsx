@@ -3,30 +3,22 @@ import PasswordStrengthBar from '@/components/form/password-strengthen-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
+import { ReactNativeModal } from "react-native-modal";
 import {
+  ActivityIndicator,
     Alert,
+    Image,
     ScrollView,
     Text,
     TouchableOpacity,
     View
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaFrameContext, SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { signUp, verifyOTP } from '../api/auth';
+import { FormData, FormErrors } from '@/types/type';
+import { images } from '@/constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-interface FormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
-
-interface FormErrors {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  password?: string;
-  confirmPassword?: string;
-}
 
 
 export default function SignUp() {
@@ -41,8 +33,17 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  console.log("Success modal:",showSuccessModal);
+
+  const [verification, setVerification] = useState({
+    state: "default",
+    error: "",
+    code: "",
+  });
   const error =
-    formData.confirmPassword.length > 0 && formData.confirmPassword !== formData.password
+    formData.confirmPassword.length > 0 && formData.confirmPassword !== formData.password && formData.password.length > 0
       ? "Passwords do not match"
       : undefined;
 
@@ -79,6 +80,16 @@ export default function SignUp() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+  const validateVerifyCode = () => {
+    const newErrors: FormErrors = {};
+
+    if(!verification.code){
+      newErrors.code = "Verification code is required"
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }
 
   const handleFirstNameChange = (value: string) =>
     setFormData((prev) => ({ ...prev, firstName: value }));
@@ -100,25 +111,63 @@ export default function SignUp() {
 
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const payload = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+      }
       
-      Alert.alert(
-        'Success!',
-        'Your account has been created successfully.',
-        [
-          {
-            text: 'OK',
-            onPress: () => router.replace('/'),
-          },
-        ]
-      );
-    } catch (error) {
-      Alert.alert('Error', 'Something went wrong. Please try again.');
+      const res = await signUp(payload);
+      
+      console.log(res);
+      setVerification({
+        ...verification,
+        state:"pending"
+      })
+      
+    } catch (err:any) {
+      Alert.alert("Error", err.message);
     } finally {
       setIsLoading(false);
     }
   };
+  const onPressVerifyOTP = async () => {
+    if(!validateVerifyCode()) return;
+    
+    try {
+      setIsLoading(true);
+      const payload = {
+        verificationCode: verification.code, 
+        email:formData.email
+      }
+
+      const res = await verifyOTP(payload);
+
+      console.log("Verofication Log: ",res);
+
+      await AsyncStorage.setItem('jwt', res.token);
+      
+      await AsyncStorage.setItem('user', JSON.stringify({
+        firstName: res.firstName,
+        lastName: res.lastName, 
+        email: res.email,
+      }));
+
+      setVerification({
+        ...verification,
+        state:"success"
+      })
+
+    } catch (error) {
+      setVerification({
+        ...verification,
+        state:"failed"
+      })
+    }finally{
+      setIsLoading(false);
+    }
+  }
 
 
   return (
@@ -231,7 +280,71 @@ export default function SignUp() {
                 </TouchableOpacity>
               </View>
             </View>
+            <ReactNativeModal
+              isVisible={verification.state === "pending"}
+              onModalHide={() => {
+            if (verification.state === "success") {
+              setShowSuccessModal(true);
+            }
+          }}
+        >
+          <View className="bg-white px-7 py-9 rounded-2xl min-h-[250px]">
+            <Text className="font-bold text-2xl mb-2">
+              Verification
+            </Text>
+            <Text className="mb-5">
+              We've sent a verification code to <Text className='font-semibold'>{formData.email}</Text>.
+            </Text>
+            <InputField
+              label={"Code"}
+              icon="lock-closed"
+              placeholder={"123456"}
+              value={verification.code}
+              keyboardType="numeric"
+              onChangeText={(code) =>
+                setVerification({ ...verification, code })
+              }
+              error={errors.code}
+            />
+            <TouchableOpacity
+                onPress={onPressVerifyOTP}
+                className="mt-5 bg-blue-500 py-3 rounded-xl flex-row justify-center items-center"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <Text className="text-white text-center font-semibold">
+                    Verify Code
+                  </Text>
+                )}
+              </TouchableOpacity>
           </View>
+        </ReactNativeModal>
+        <ReactNativeModal isVisible={showSuccessModal}>
+          <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
+            <Image
+              source={images.check}
+              className="w-[110px] h-[110px] mx-auto my-5"
+            />
+            <Text className="text-3xl font-JakartaBold text-center">
+              Verified
+            </Text>
+            <Text className="text-base text-gray-400 font-Jakarta text-center mt-2">
+              You have successfully verified your account.
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                setTimeout(()=>router.push('/(tabs)/home'),300)
+                setShowSuccessModal(false);
+              }}
+              className="mt-5 bg-blue-500 py-3 rounded-xl flex-row justify-center items-center"
+            >
+              <Text className='text-white text-center font-semibold'>Browse Home</Text>
+            </TouchableOpacity>
+          </View>
+        </ReactNativeModal>
+          </View> 
       </ScrollView>
     </SafeAreaView>
   );
