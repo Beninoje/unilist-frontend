@@ -1,27 +1,32 @@
-import { getSession } from '@/utils/auth';
-import { Redirect } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+// app/index.tsx
+import { useEffect, useState } from "react";
+import { Redirect } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { getSession } from "@/utils/auth";
+
+SplashScreen.preventAutoHideAsync(); // keep splash visible until we're ready
 
 export default function Index() {
   const [session, setSession] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const checkUser = async () => {
-      const token = await getSession();
-      setSession(token);
-      setLoading(false);
+    const prepare = async () => {
+      try {
+        const s = await getSession(); // check cache
+        setSession(s);
+      } catch (err) {
+        console.error("Session check failed:", err);
+      } finally {
+        setReady(true);
+        await SplashScreen.hideAsync(); 
+      }
     };
-    checkUser();
+    prepare();
   }, []);
 
-  if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+  if (!ready) {
+    return null;
   }
 
   if (session) {

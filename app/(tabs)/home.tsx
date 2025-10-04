@@ -24,10 +24,13 @@ export default function Home() {
 
       setUser(session.user);
       setLoading(false);
+
     };
 
     loadSession();
   }, []);
+
+  
 
   if (loading) {
     return (

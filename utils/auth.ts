@@ -25,7 +25,15 @@ export const getSession = async () => {
     
     const token = await AsyncStorage.getItem('jwt');
     const userInfo = await AsyncStorage.getItem('user');
+    const expiry = await AsyncStorage.getItem('jwtExpiry');
 
+    if (!token || !expiry || !userInfo) return null;
+
+    const expiryTime = Number(expiry);
+    if (Date.now() > expiryTime) {
+      await AsyncStorage.multiRemove(['jwt', 'jwtExpiry', 'user']);
+      return null;
+    }
     const user = JSON.parse(userInfo as string);
     return {
       token,

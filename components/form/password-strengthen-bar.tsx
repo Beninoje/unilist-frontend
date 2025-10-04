@@ -8,18 +8,18 @@ type PasswordStrengthBarProps = {
 const PasswordStrengthBar = ({ password }: PasswordStrengthBarProps) => {
   const progress = useRef(new Animated.Value(0)).current;
 
-  // Determine strength (0 → 1 scale)
+
   const strength = Math.min(password.length / 12, 1);
 
   useEffect(() => {
     Animated.timing(progress, {
       toValue: strength,
-      duration: 300, // smooth animation
+      duration: 300, 
       useNativeDriver: false,
     }).start();
   }, [strength]);
 
-  // Interpolate width + color
+
   const width = progress.interpolate({
     inputRange: [0, 1],
     outputRange: ["0%", "100%"],
@@ -27,7 +27,7 @@ const PasswordStrengthBar = ({ password }: PasswordStrengthBarProps) => {
 
   const color = progress.interpolate({
     inputRange: [0, 0.5, 1],
-    outputRange: ["#ef4444", "#f59e0b", "#22c55e"], // red → yellow → green
+    outputRange: ["#ef4444", "#f59e0b", "#22c55e"], 
   });
 
   if (password.length < 1) return null;

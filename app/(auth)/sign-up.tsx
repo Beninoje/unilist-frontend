@@ -67,8 +67,8 @@ export default function SignUp() {
 
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
+    } else if (formData.password.length < 12) {
+      newErrors.password = 'Password must be at least 12 characters';
     }
 
     if (!formData.confirmPassword) {
@@ -127,7 +127,17 @@ export default function SignUp() {
       })
       
     } catch (err:any) {
-      Alert.alert("Error", err.message);
+      let msg = "Something went wrong";
+      console.log(err)
+      if(err){
+        if(typeof err === "object"){
+          msg = Object.values(err).join("\n");
+        }else if(typeof err === "string"){
+          msg = err;
+        }
+      }
+
+      Alert.alert("Error", msg);
     } finally {
       setIsLoading(false);
     }
@@ -144,8 +154,6 @@ export default function SignUp() {
 
       const res = await verifyOTP(payload);
 
-      console.log("Verofication Log: ",res);
-
       await AsyncStorage.setItem('jwt', res.token);
       
       await AsyncStorage.setItem('user', JSON.stringify({
@@ -153,6 +161,7 @@ export default function SignUp() {
         lastName: res.lastName, 
         email: res.email,
       }));
+      await AsyncStorage.setItem('jwtExpiry', (Date.now() + res.expiresIn).toString());
 
       setVerification({
         ...verification,

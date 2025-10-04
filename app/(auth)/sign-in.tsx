@@ -17,6 +17,8 @@ import {
   TextInputProps
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { login } from '../api/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface FormData {
   email: string;
@@ -71,19 +73,22 @@ export default function SignIn() {
 
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const payload = {
+        email:formData.email,
+        password:formData.password
+      }
+      const res = await login(payload);
+      await AsyncStorage.setItem('jwt', res.token);
+      await AsyncStorage.setItem('user', JSON.stringify({
+        firstName: res.firstName,
+        lastName: res.lastName,
+        email: res.email,
+      }));
+      await AsyncStorage.setItem('jwtExpiry', (Date.now() + res.expiresIn).toString());
+
+      console.log(res);
+      router.push('/(tabs)/home')
       
-      Alert.alert(
-        'Welcome Back!',
-        'You have successfully signed in.',
-        [
-          {
-            text: 'OK',
-            onPress: () => router.replace('/'),
-          },
-        ]
-      );
     } catch (error) {
       Alert.alert('Error', 'Invalid email or password. Please try again.');
     } finally {
