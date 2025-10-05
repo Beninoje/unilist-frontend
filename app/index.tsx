@@ -30,7 +30,7 @@ export default function Index() {
   }
 
   if (session) {
-    return <Redirect href="/(tabs)/home" />;
+    return <Redirect href="/(root)/(tabs)/home" />;
   }
 
   return <Redirect href="/(auth)/sign-in" />;

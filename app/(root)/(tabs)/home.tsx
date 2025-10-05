@@ -4,8 +4,10 @@ import { Text, View, ActivityIndicator } from "react-native";
 import { router } from "expo-router";
 import { getSession } from "@/utils/auth";
 import { UserProps } from "@/types/type";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Header } from "@/components/navigation/header";
 
-export default function Home() {
+export default function HomeScreen() {
   const [user, setUser] = useState<UserProps>({
     firstName:"",
     lastName:"",
@@ -42,9 +44,13 @@ export default function Home() {
   }
 
   return (
-    <View className="flex-1 items-center justify-center">
-      <Text className="text-2xl font-bold">Welcome, {user?.firstName} {user?.lastName}👋</Text>
-      <Text>Email: {user?.email}</Text>
-    </View>
+    <SafeAreaView className="">
+      <Header/>
+      <View className="flex-1 items-center justify-center">
+        
+        <Text className="text-2xl font-bold">Welcome, {user?.firstName} {user?.lastName}👋</Text>
+        <Text>Email: {user?.email}</Text>
+      </View>
+    </SafeAreaView>
   );
 }

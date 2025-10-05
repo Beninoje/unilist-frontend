@@ -344,7 +344,7 @@ export default function SignUp() {
             </Text>
             <TouchableOpacity
               onPress={() => {
-                setTimeout(()=>router.push('/(tabs)/home'),300)
+                setTimeout(()=>router.replace('/(root)/home'),300)
                 setShowSuccessModal(false);
               }}
               className="mt-5 bg-blue-500 py-3 rounded-xl flex-row justify-center items-center"
