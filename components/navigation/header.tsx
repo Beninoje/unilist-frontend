@@ -5,7 +5,6 @@ import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation, DrawerActions } from "@react-navigation/native";
 
 export const Header = () => {
-  const navigation = useNavigation();
 
   return (
     <View
@@ -14,23 +13,23 @@ export const Header = () => {
         alignItems: "center",
         justifyContent: "space-between",
         padding: 16,
-        backgroundColor: "#2563eb",
+        
       }}
     >
         <View>
-            <Text className="text-white font-semibold text-2xl">
+            <Text className="text-black font-semibold text-2xl">
                 unilist
             </Text>
         </View>
-        <View className="flex-row items-center gap-4">
+        <View className="flex-row items-center gap-10">
             <View className="">
                 <TouchableOpacity>
-                    <Feather name="bell" size={20} color="white" />
+                    <Feather name="bell" size={20} color="black" />
                 </TouchableOpacity>
             </View>
             <View className="">
                 <TouchableOpacity>
-                    <MaterialCommunityIcons name="account-outline" size={24} color="white" />
+                    <MaterialCommunityIcons name="account-outline" size={24} color="black" />
                 </TouchableOpacity>
             </View>
         </View>

@@ -6,6 +6,8 @@ import { getSession } from "@/utils/auth";
 import { UserProps } from "@/types/type";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/navigation/header";
+import { SearchBar } from "@/components/form/search-bar";
+import { CategoriesSwiper } from "@/components/ui/categories-swiper";
 
 export default function HomeScreen() {
   const [user, setUser] = useState<UserProps>({
@@ -30,10 +32,7 @@ export default function HomeScreen() {
     };
 
     loadSession();
-  }, []);
-
-  
-
+  }, []); 
   if (loading) {
     return (
       <View className="flex-1 items-center justify-center">
@@ -42,14 +41,12 @@ export default function HomeScreen() {
       </View>
     );
   }
-
   return (
-    <SafeAreaView className="">
+    <SafeAreaView className="bg-zinc-100 flex-1">
       <Header/>
-      <View className="flex-1 items-center justify-center">
-        
-        <Text className="text-2xl font-bold">Welcome, {user?.firstName} {user?.lastName}👋</Text>
-        <Text>Email: {user?.email}</Text>
+      <View className="flex-1 p-4">
+          <SearchBar/>
+          <CategoriesSwiper/>
       </View>
     </SafeAreaView>
   );

@@ -3,6 +3,7 @@ import { View, Image, TouchableOpacity } from "react-native";
 import { icons } from "@/constants";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const TabIcon = ({
   source,

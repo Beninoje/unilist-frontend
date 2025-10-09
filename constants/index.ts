@@ -28,9 +28,12 @@ import camera from "@/assets/icons/camera.png";
 import gallery from "@/assets/icons/gallery.png";
 import trash from "@/assets/icons/trash.png";
 import check from "@/assets/images/check.png";
-export const images = {
-  check
-};
+import clothing from "@/assets/images/clothing.jpg";
+import dorm from "@/assets/images/dorm.jpg";
+import tech from "@/assets/images/technology.jpg";
+import books from "@/assets/images/textbooks.jpg";
+import sports from "@/assets/images/sports.jpg" ;
+
 
 export const icons = {
 
@@ -63,5 +66,24 @@ export const icons = {
   target,
   to,
 };
+
+
+// images.ts
+export const images = {
+  sports: require('@/assets/images/sports.jpg'),
+  books: require('@/assets/images/textbooks.jpg'),
+  electronics: require('@/assets/images/technology.jpg'),
+  clothes: require('@/assets/images/clothing.jpg'),
+  furniture: require('@/assets/images/dorm.jpg'),
+};
+
+// popularCategories.ts
+export const popularCategories = [
+  { id: '1', name: 'Sports', imageKey: 'sports' },
+  { id: '2', name: 'Books', imageKey: 'books' },
+  { id: '3', name: 'Electronics', imageKey: 'electronics' },
+  { id: '4', name: 'Clothes', imageKey: 'clothes' },
+  { id: '5', name: 'Furniture', imageKey: 'furniture' },
+];
 
 
