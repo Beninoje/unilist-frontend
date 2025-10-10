@@ -1,10 +1,9 @@
 import { Tabs } from "expo-router";
-import { View, Image, TouchableOpacity } from "react-native";
-import { icons } from "@/constants";
-import { Ionicons } from "@expo/vector-icons";
+import { View, Image } from "react-native";
+import { AntDesign, Feather, Fontisto, Ionicons, FontAwesome, Octicons} from "@expo/vector-icons";
 import React from "react";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { Svg, Path } from "react-native-svg";
 const TabIcon = ({
   source,
   focused,
@@ -19,7 +18,6 @@ const TabIcon = ({
       height: 26,
       marginTop:20
     }}
-
   >
     <Image
       source={source}
@@ -41,17 +39,13 @@ export default function Layout() {
         tabBarShowLabel: false,
         tabBarStyle: { 
           position: "absolute",
-          bottom: 20, 
-          height: 60,
-          backgroundColor: "#1e1e1e", 
-          borderRadius: 40, 
-          marginHorizontal: 20,
-          shadowColor: "#000", 
-          shadowOpacity: 0.15, 
-          shadowRadius: 10,
-          paddingBottom: 0, 
+          height: 80,
+          backgroundColor: "#f4f4f5", 
+          paddingBottom: 20, 
+          borderTopWidth: 2, // ✅ add this
+      borderTopColor: "#e5e7eb", // ✅ soft gray (Tailwind’s gray-200)
           paddingTop: 0,
-          borderTopWidth: 0, // Remove default border
+
         },
         tabBarItemStyle: {
         },
@@ -63,76 +57,134 @@ export default function Layout() {
         name="home"
         options={{
           tabBarIcon: ({ focused }) => (
-            <TabIcon source={icons.home} focused={focused} />
+            <Octicons 
+              name={focused ? "home-fill" : "home"} 
+              size={24} 
+              color={focused ? "#60a5fa" : "#9ca3af"}
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                height: 26,
+                marginTop: 20,
+              }} 
+            />
+            
           ),
         }}
         
       />
 
       {/* Search */}
-      <Tabs.Screen
-        name="search"
+     <Tabs.Screen
+        name="messages"
         options={{
           tabBarIcon: ({ focused }) => (
-            <TabIcon source={icons.search} focused={focused} />
+            <View
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          height: 26,
+          marginTop: 20,
+        }}
+      >
+        <Svg
+          width={26}
+          height={26}
+          viewBox="0 0 24 24"
+          fill="none"
+        >
+          <Path
+            d="M21.0039 12C21.0039 16.9706 16.9745 21 12.0039 21C9.9675 21 3.00463 21 3.00463 21C3.00463 21 4.56382 17.2561 3.93982 16.0008C3.34076 14.7956 3.00391 13.4372 3.00391 12C3.00391 7.02944 7.03334 3 12.0039 3C16.9745 3 21.0039 7.02944 21.0039 12Z"
+            stroke={focused ? "#60a5fa" : "#9ca3af"} // outline color
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill={focused ? "#60a5fa" : "none"} // 👈 fill when focused
+          />
+        </Svg>
+      </View>
           ),
         }}
       />
 
-<Tabs.Screen
-  name="create"
-  options={{
-    tabBarButton: () => (
-      <TouchableOpacity
-        activeOpacity={0.9}
-        style={{
-          position: "absolute", // Add this
-          top: -25, 
-          left: "50%", // Add this to center it
-          transform: [{ translateX: -35 }], // Add this (half of width: 70/2)
-          justifyContent: "center",
-          alignItems: "center",
+      {/* Create */}
+      <Tabs.Screen
+        name="create"
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <AntDesign name="plus" size={24}
+            color={focused ? "#60a5fa" : "#9ca3af"}
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              height: 26,
+              marginTop:20
+            }}/>
+          ),
         }}
-      >
-        <View
-          style={{
-            width: 70,
-            height: 70,
-            borderRadius: 35,
-            backgroundColor: "#60a5fa",
-            justifyContent: "center",
-            alignItems: "center",
-            elevation: 5,
-            shadowColor: "#000", 
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.3,
-            shadowRadius: 5,
-          }}
-        >
-          <Ionicons name="add" size={36} color="white" />
-        </View>
-      </TouchableOpacity>
-    ),
-  }}
-/>
-
-
+      />
+      
       {/* Favourites */}
+
       <Tabs.Screen
         name="favourites"
         options={{
           tabBarIcon: ({ focused }) => (
-            <TabIcon source={icons.star} focused={focused} />
+            <FontAwesome
+              name={focused ? "heart" : "heart-o"}
+              size={26}
+              color={focused ? "#60a5fa" : "#9ca3af"}
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                height: 26,
+                marginTop: 20,
+              }}
+            />
           ),
         }}
       />
+
 
       {/* Profile */}
       <Tabs.Screen
         name="profile"
         options={{
           tabBarIcon: ({ focused }) => (
-            <TabIcon source={icons.profile} focused={focused} />
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                height: 26,
+                marginTop: 20,
+              }}
+            >
+            <Svg
+          width={26}
+          height={26}
+          viewBox="0 0 24 24"
+          fill="none"
+        >
+          {/* Head */}
+          <Path
+            d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z"
+            fill={focused ? "#60a5fa" : "none"}
+            stroke={focused ? "#60a5fa" : "#9ca3af"}
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          {/* Body */}
+          <Path
+            d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z"
+            fill={focused ? "#60a5fa" : "none"}
+            stroke={focused ? "#60a5fa" : "#9ca3af"}
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </Svg>
+        </View>
           ),
         }}
       />

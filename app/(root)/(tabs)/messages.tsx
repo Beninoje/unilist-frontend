@@ -3,7 +3,7 @@ import { Text, View } from "react-native";
 export default function Search() {
     return (
         <View>
-            <Text>Search Page</Text>
+            <Text>Messages Page</Text>
         </View>
     )
 }   
