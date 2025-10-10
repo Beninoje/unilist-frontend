@@ -86,4 +86,15 @@ export const popularCategories = [
   { id: '5', name: 'Furniture', imageKey: 'furniture' },
 ];
 
+// mocks/listings.ts
+export const mockListings = Array.from({ length: 50 }).map((_, i) => ({
+  id: i.toString(),
+  title: `Listing #${i + 1}`,
+  price: `$${(Math.random() * 100).toFixed(2)}`,
+  image: "https://picsum.photos/400/300?random=" + i,
+  user: {
+    name: `User ${i + 1}`,
+    avatar: "https://i.pravatar.cc/40?img=" + i,
+  },
+}));
 

@@ -42,8 +42,8 @@ export default function Layout() {
           height: 80,
           backgroundColor: "#f4f4f5", 
           paddingBottom: 20, 
-          borderTopWidth: 2, // ✅ add this
-      borderTopColor: "#e5e7eb", // ✅ soft gray (Tailwind’s gray-200)
+          borderTopWidth: 2, 
+          borderTopColor: "#e5e7eb", 
           paddingTop: 0,
 
         },
