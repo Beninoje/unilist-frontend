@@ -40,14 +40,13 @@ export default function Layout() {
         tabBarStyle: { 
           position: "absolute",
           height: 80,
-          backgroundColor: "#f4f4f5", 
-          paddingBottom: 20, 
+          backgroundColor: "#f4f4f5",  
           borderTopWidth: 2, 
           borderTopColor: "#e5e7eb", 
           paddingTop: 0,
-
         },
         tabBarItemStyle: {
+
         },
       }}
     >
@@ -124,6 +123,29 @@ export default function Layout() {
         }}
       />
       
+      
+
+
+      {/* Profile */}
+      <Tabs.Screen
+        name="listings"
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Ionicons 
+            name={focused ? "ticket" : "ticket-outline"}
+              size={26}
+              color={focused ? "#60a5fa" : "#9ca3af"}
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                height: 26,
+                marginTop: 20,
+              }}
+            />
+            
+          ),
+        }}
+      />
       {/* Favourites */}
 
       <Tabs.Screen
@@ -141,50 +163,6 @@ export default function Layout() {
                 marginTop: 20,
               }}
             />
-          ),
-        }}
-      />
-
-
-      {/* Profile */}
-      <Tabs.Screen
-        name="profile"
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <View
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                height: 26,
-                marginTop: 20,
-              }}
-            >
-            <Svg
-          width={26}
-          height={26}
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-          {/* Head */}
-          <Path
-            d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z"
-            fill={focused ? "#60a5fa" : "none"}
-            stroke={focused ? "#60a5fa" : "#9ca3af"}
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          {/* Body */}
-          <Path
-            d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z"
-            fill={focused ? "#60a5fa" : "none"}
-            stroke={focused ? "#60a5fa" : "#9ca3af"}
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </Svg>
-        </View>
           ),
         }}
       />

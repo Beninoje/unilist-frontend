@@ -5,7 +5,7 @@ import { FlatList } from "react-native-gesture-handler"
 export const CategoriesSwiper = () => {
     return (
         <View className="mt-4">
-          <Text className="text-2xl font-bold mb-2">Popular Categories</Text>
+          <Text className="text-2xl font-bold">Popular Categories</Text>
           <FlatList
             data={popularCategories}
             horizontal
