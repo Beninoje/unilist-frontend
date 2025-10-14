@@ -34,7 +34,9 @@ import tech from "@/assets/images/technology.jpg";
 import books from "@/assets/images/textbooks.jpg";
 import sports from "@/assets/images/sports.jpg" ;
 
-
+export const images1 = {
+  check
+}
 export const icons = {
 
   arrowUp,

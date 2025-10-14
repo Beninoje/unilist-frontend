@@ -16,7 +16,7 @@ import {
 import { SafeAreaFrameContext, SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { signUp, verifyOTP } from '../api/auth';
 import { FormData, FormErrors } from '@/types/type';
-import { images } from '@/constants';
+import { images, images1 } from '@/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -284,7 +284,7 @@ export default function SignUp() {
             <View className="py-6">
               <View className="flex-row items-center justify-center">
                 <Text className="text-gray-600">Already have an account? </Text>
-                <TouchableOpacity onPress={() => router.back()}>
+                <TouchableOpacity onPress={() => router.push('/(auth)/sign-in')}>
                   <Text className="text-blue-600 font-semibold">Sign In</Text>
                 </TouchableOpacity>
               </View>
@@ -333,7 +333,7 @@ export default function SignUp() {
         <ReactNativeModal isVisible={showSuccessModal}>
           <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
             <Image
-              source={images.check}
+              source={images1.check}
               className="w-[110px] h-[110px] mx-auto my-5"
             />
             <Text className="text-3xl font-JakartaBold text-center">
@@ -344,7 +344,7 @@ export default function SignUp() {
             </Text>
             <TouchableOpacity
               onPress={() => {
-                setTimeout(()=>router.replace('/(root)/home'),300)
+                setTimeout(()=>router.replace('/(root)/(tabs)/home'),300)
                 setShowSuccessModal(false);
               }}
               className="mt-5 bg-blue-500 py-3 rounded-xl flex-row justify-center items-center"

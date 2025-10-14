@@ -15,6 +15,7 @@ export default function HomeScreen() {
     firstName: "",
     lastName: "",
     email: "",
+    token:"",
   });
   const [loading, setLoading] = useState(true);
   const [listings, setListings] = useState(mockListings); 
@@ -28,7 +29,7 @@ export default function HomeScreen() {
         return;
       }
 
-      setUser(session.user);
+      setUser({...session.user,token:session.token});
       setLoading(false);
     };
 
@@ -46,7 +47,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView className="bg-zinc-100 flex-1">
-      <Header />
+      <Header user={user}/>
       <FlatList
         data={listings}
         keyExtractor={(item, index) => `${item.id}-${index}`}

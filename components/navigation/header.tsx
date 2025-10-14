@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { TouchableOpacity, View, Text } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ProfileDrawer } from "../profile/profile-sheet";
+import { UserProps } from "@/types/type";
 
 
-export const Header = () => {
+export const Header = ({user}:UserProps) => {
   const [showProfile, setShowProfile] = useState(false);
 
   return (
@@ -28,7 +29,7 @@ export const Header = () => {
         </View>
       </View>
 
-      <ProfileDrawer visible={showProfile} onClose={() => setShowProfile(false)} />
+      <ProfileDrawer visible={showProfile} onClose={() => setShowProfile(false)} user={user} token={user.token} />
     </>
   );
 };

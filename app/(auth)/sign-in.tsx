@@ -87,7 +87,7 @@ export default function SignIn() {
       await AsyncStorage.setItem('jwtExpiry', (Date.now() + res.expiresIn).toString());
 
       console.log(res);
-      router.replace('/(root)/home')
+      router.replace('/(root)/(tabs)/home')
       
     } catch (error) {
       Alert.alert('Error', 'Invalid email or password. Please try again.');
