@@ -5,12 +5,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { getSession } from "@/utils/auth";
 import { router } from "expo-router";
 import { UserProps } from "@/types/type";
+import { Header } from "@/components/navigation/header";
 
 export default function Listings() {
 
   return (
     <SafeAreaView className="flex-1 bg-zinc-100 px-6">
-      <Text>Listings Page</Text>
+      <Header user={user}/>
     </SafeAreaView>
   );
 }

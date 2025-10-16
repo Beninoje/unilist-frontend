@@ -9,32 +9,12 @@ import { SearchBar } from "@/components/form/search-bar";
 import { CategoriesSwiper } from "@/components/ui/categories-swiper";
 import { mockListings } from "@/constants";
 import { FontAwesome } from "@expo/vector-icons";
+import { useUser } from "@/hooks/context/user-context";
 
 export default function HomeScreen() {
-  const [user, setUser] = useState<UserProps>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    token:"",
-  });
-  const [loading, setLoading] = useState(true);
+  const {user, loading} = useUser();
   const [listings, setListings] = useState(mockListings); 
 
-  useEffect(() => {
-    const loadSession = async () => {
-      const session = await getSession();
-
-      if (!session || !session.token) {
-        router.replace("/(auth)/sign-up");
-        return;
-      }
-
-      setUser({...session.user,token:session.token});
-      setLoading(false);
-    };
-
-    loadSession();
-  }, []);
 
   if (loading) {
     return (

@@ -38,7 +38,7 @@ export const ProfileDrawer = ({ visible, onClose, user, token }: any) => {
   const hasChanges =
   formData.firstName !== user.firstName ||
   formData.lastName !== user.lastName ||
-  formData.password.trim() !== "";
+  formData.password!.trim() !== "";
 
   useEffect(() => {
     if (visible) {
@@ -191,7 +191,7 @@ export const ProfileDrawer = ({ visible, onClose, user, token }: any) => {
                   />
                 </TouchableOpacity>
               </View>
-              <PasswordStrengthBar password={formData.password}/>
+              <PasswordStrengthBar password={formData.password as string}/>
             </View>
 
 
