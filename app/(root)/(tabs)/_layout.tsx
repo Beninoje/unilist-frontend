@@ -1,9 +1,9 @@
+import { AntDesign, FontAwesome, Ionicons, Octicons } from "@expo/vector-icons";
+import { BlurView } from 'expo-blur';
 import { Tabs } from "expo-router";
-import { View, Image } from "react-native";
-import { AntDesign, Feather, Fontisto, Ionicons, FontAwesome, Octicons} from "@expo/vector-icons";
 import React from "react";
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import { Svg, Path } from "react-native-svg";
+import { Image, Platform, View } from "react-native";
+import { Path, Svg } from "react-native-svg";
 const TabIcon = ({
   source,
   focused,
@@ -40,13 +40,36 @@ export default function Layout() {
         tabBarStyle: { 
           position: "absolute",
           height: 80,
-          backgroundColor: "#f4f4f5",  
-          borderTopWidth: 2, 
-          borderTopColor: "#e5e7eb", 
+          backgroundColor: 'transparent',
+          borderTopWidth: 0,
+          elevation: 0,
           paddingTop: 0,
+          shadowOffset: { width: 0, height: -1 },
+          shadowColor: '#000',
+          shadowOpacity: 0.05,
+          shadowRadius: 2,
         },
+        tabBarBackground: () => (
+          Platform.OS === 'ios' ? (
+            <BlurView
+              tint="default"
+              intensity={30}
+              style={{
+                width: '100%',
+                height: '100%',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'transparent',
+              }}
+              className="z-[100]"
+            />
+          ) : null
+        ),
         tabBarItemStyle: {
-
+          marginTop: Platform.OS === 'ios' ? 0 : 20,
         },
       }}
     >
@@ -73,7 +96,7 @@ export default function Layout() {
         
       />
 
-      {/* Search */}
+      {/* Messages */}
      <Tabs.Screen
         name="messages"
         options={{
@@ -118,7 +141,8 @@ export default function Layout() {
               justifyContent: "center",
               height: 26,
               marginTop:20
-            }}/>
+            }}
+            />
           ),
         }}
       />

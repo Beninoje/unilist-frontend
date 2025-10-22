@@ -31,7 +31,7 @@ export default function HomeScreen() {
       <FlatList
         data={listings}
         keyExtractor={(item, index) => `${item.id}-${index}`}
-        className="mb-14"
+        className="mb-14 pt-6"
         numColumns={2}
         contentContainerStyle={{ paddingHorizontal: 14 }}
         columnWrapperStyle={{ justifyContent: "space-between", marginBottom: 10}}

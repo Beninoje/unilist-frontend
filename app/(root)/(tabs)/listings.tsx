@@ -10,14 +10,13 @@ interface Listing {
   id: string;
   title: string;
   price: string;
-  image: any; // Using any for now since we're using require() for images
+  image: any;
   status: 'active' | 'sold' | 'draft';
 }
 
 export default function Listings() {
   const {user, loading} = useUser();
   
-  // Mock data - replace with your actual API calls
   const [myListings, setMyListings] = useState<Listing[]>([
     {
       id: '1',
@@ -36,7 +35,7 @@ export default function Listings() {
   ]);
 
   const handleCreateListing = () => {
-    router.push('/(root)/create-listing' as any);
+    router.push('/(root)/create' as any);
   };
 
   const handleEditListing = (id: string) => {
@@ -119,7 +118,7 @@ export default function Listings() {
           <Text className="text-2xl font-bold">My Listings</Text>
           <TouchableOpacity 
             onPress={handleCreateListing}
-            className="bg-blue-500 w-10 h-10 rounded-full items-center justify-center"
+            className="bg-[#60a5fa] w-10 h-10 rounded-full items-center justify-center"
           >
             <Feather name="plus" size={24} color="white" />
           </TouchableOpacity>
