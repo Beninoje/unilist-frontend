@@ -1,3 +1,5 @@
+import { Double } from "react-native/Libraries/Types/CodegenTypesNamespace";
+
 export interface FormData {
   firstName: string;
   lastName: string;
@@ -30,4 +32,14 @@ export interface UserProps {
   lastName: string;
   email:string;
   token:string;
+} 
+
+// Listings
+export interface CreateListingFormData {
+  title: string;
+  price: Double;
+  description: string;
+  condition: string;
+  category: string;
+  images: string[]; 
 }
