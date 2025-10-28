@@ -1,25 +1,27 @@
-import React, { useRef, useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  Image,
-  Animated,
-  Modal,
-  Dimensions,
-  Alert,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { FormErrors, UpdateUserFormData, UpdateUserFormErrors, UserProps } from "@/types/type";
-import InputField from "../form/input-field";
 import { updateProfile } from "@/app/api/profile";
-import PasswordStrengthBar from "../form/password-strengthen-bar";
+import { UpdateUserFormData, UpdateUserFormErrors } from "@/types/type";
+import { signOut } from "@/utils/auth";
+import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Alert,
+  Animated,
+  Dimensions,
+  Image,
+  Modal,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import PasswordStrengthBar from "../form/password-strengthen-bar";
 
 const { height } = Dimensions.get("window");
 
 export const ProfileDrawer = ({ visible, onClose, user, token }: any) => {
+  const router = useRouter();
   const slideAnim = useRef(new Animated.Value(height)).current;
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState<UpdateUserFormData>({
@@ -208,6 +210,23 @@ export const ProfileDrawer = ({ visible, onClose, user, token }: any) => {
                 }`}
               >
                 Save Changes
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              className="rounded-xl py-4 mt-4 bg-blue-500"
+              onPress={async () => {
+                try {
+                  await signOut();
+                  onClose();
+                  router.replace("/sign-in");
+                } catch (error) {
+                  Alert.alert("Error", "Failed to sign out");
+                }
+              }}
+            >
+              <Text className="text-white font-semibold text-center text-base">
+                Sign Out
               </Text>
             </TouchableOpacity>
           </View>

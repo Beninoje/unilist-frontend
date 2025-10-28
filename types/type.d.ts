@@ -32,8 +32,19 @@ export interface UserProps {
   lastName: string;
   email:string;
   token:string;
+  listings: Listing[];
 } 
 
+interface Listing {
+  id: string;
+  title: string;
+  price: string;
+  image: any;
+  status: "active" | "sold" | "draft";
+  category?: string;
+  condition?: string;
+  description?: string;
+}
 // Listings
 export interface CreateListingFormData {
   title: string;

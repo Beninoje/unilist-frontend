@@ -52,3 +52,8 @@ export const removeToken = async () => {
   await AsyncStorage.removeItem('jwt');
   await AsyncStorage.removeItem('jwtExpiry');
 };
+
+export const signOut = async () => {
+  await AsyncStorage.multiRemove(['jwt', 'jwtExpiry', 'user']);
+};
+
