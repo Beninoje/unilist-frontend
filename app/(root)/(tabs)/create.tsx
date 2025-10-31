@@ -4,6 +4,7 @@ import { useUser } from "@/hooks/context/user-context";
 import { CreateListingFormData } from "@/types/type";
 import { uploadImage } from "@/utils/firebase/imageUpload";
 import { Feather } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from "expo-blur";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
@@ -20,7 +21,7 @@ interface FormData {
 }
 
 export default function Create() {
-    const {user, loading} = useUser();
+    const {user, loading, setUser} = useUser();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [images, setImages] = useState<string[]>([]);
 
@@ -52,8 +53,6 @@ export default function Create() {
             setImages([...images, result.assets[0].uri]);
         }
     };
-
-
 
     const handleSubmit = async () => {
         try {
@@ -111,6 +110,9 @@ export default function Create() {
                 // Log the response for debugging
                 console.log("Full server response:", response);
 
+                                // Update the user's state with the response from the backend
+                setUser((prev)=>prev ? { ...prev, listings: response } : prev)
+
                 // Consider it a success if we get a response and there's no error
                 if (response && !response.error) {
                     Alert.alert(
@@ -163,7 +165,9 @@ export default function Create() {
             });
             setImages([]);
         }
-    };    return (
+    };  
+
+    return (
         <SafeAreaView className="flex-1 bg-gray-50">
             <Header user={user} title="Create Listing"/>
 

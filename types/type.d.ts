@@ -38,13 +38,14 @@ export interface UserProps {
 interface Listing {
   id: string;
   title: string;
-  price: string;
+  price: Double;
   image: any;
   status: "active" | "sold" | "draft";
   category?: string;
   condition?: string;
   description?: string;
 }
+
 // Listings
 export interface CreateListingFormData {
   title: string;
@@ -53,4 +54,13 @@ export interface CreateListingFormData {
   condition: string;
   category: string;
   images: string[]; 
+}
+export interface EditListingFormData {
+  id?:BigInt;
+  title?: string;
+  price?: Double;
+  description?: string;
+  condition?: string;
+  category?: string;
+  images?: string[];
 }

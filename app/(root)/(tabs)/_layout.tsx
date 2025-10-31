@@ -24,7 +24,7 @@ const TabIcon = ({
       style={{
         width: 26,
         height: 26,
-        tintColor: focused ? "#60a5fa" : "#9ca3af",
+        tintColor: focused ? "#60a5fa" : "#626262",
       }}
       resizeMode="contain"
     />
@@ -53,7 +53,7 @@ export default function Layout() {
           Platform.OS === 'ios' ? (
             <BlurView
               tint="default"
-              intensity={30}
+              intensity={50}
               style={{
                 width: '100%',
                 height: '100%',
@@ -82,7 +82,7 @@ export default function Layout() {
             <Octicons 
               name={focused ? "home-fill" : "home"} 
               size={24} 
-              color={focused ? "#60a5fa" : "#9ca3af"}
+              color={focused ? "#60a5fa" : "#626262"}
               style={{
                 alignItems: "center",
                 justifyContent: "center",
@@ -117,7 +117,7 @@ export default function Layout() {
         >
           <Path
             d="M21.0039 12C21.0039 16.9706 16.9745 21 12.0039 21C9.9675 21 3.00463 21 3.00463 21C3.00463 21 4.56382 17.2561 3.93982 16.0008C3.34076 14.7956 3.00391 13.4372 3.00391 12C3.00391 7.02944 7.03334 3 12.0039 3C16.9745 3 21.0039 7.02944 21.0039 12Z"
-            stroke={focused ? "#60a5fa" : "#9ca3af"} // outline color
+            stroke={focused ? "#60a5fa" : "#626262"} // outline color
             strokeWidth={2}
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -135,7 +135,7 @@ export default function Layout() {
         options={{
           tabBarIcon: ({ focused }) => (
             <AntDesign name="plus" size={24}
-            color={focused ? "#60a5fa" : "#9ca3af"}
+            color={focused ? "#60a5fa" : "#626262"}
             style={{
               alignItems: "center",
               justifyContent: "center",
@@ -150,15 +150,16 @@ export default function Layout() {
       
 
 
-      {/* Profile */}
+      {/* listings */}
       <Tabs.Screen
         name="listings"
+        
         options={{
           tabBarIcon: ({ focused }) => (
             <Ionicons 
             name={focused ? "ticket" : "ticket-outline"}
               size={26}
-              color={focused ? "#60a5fa" : "#9ca3af"}
+              color={focused ? "#60a5fa" : "#626262"}
               style={{
                 alignItems: "center",
                 justifyContent: "center",
@@ -179,7 +180,7 @@ export default function Layout() {
             <FontAwesome
               name={focused ? "heart" : "heart-o"}
               size={26}
-              color={focused ? "#60a5fa" : "#9ca3af"}
+              color={focused ? "#60a5fa" : "#626262"}
               style={{
                 alignItems: "center",
                 justifyContent: "center",

@@ -1,6 +1,6 @@
 import { Text, View } from "react-native";
 
-export default function Search() {
+export default function Messages() {
     return (
         <View>
             <Text>Messages Page</Text>
