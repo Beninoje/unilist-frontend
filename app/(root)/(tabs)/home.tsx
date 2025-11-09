@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { View, ActivityIndicator, FlatList, Text, Image, TouchableOpacity } from "react-native";
+import { View, ActivityIndicator, FlatList, Text, TouchableOpacity } from "react-native";
+import { Image } from 'expo-image';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { getSession } from "@/utils/auth";
@@ -10,11 +11,43 @@ import { CategoriesSwiper } from "@/components/ui/categories-swiper";
 import { mockListings } from "@/constants";
 import { FontAwesome } from "@expo/vector-icons";
 import { useUser } from "@/hooks/context/user-context";
+import { fetchAllListings } from "@/app/api/listings";
 
 export default function HomeScreen() {
   const {user, loading} = useUser();
-  const [listings, setListings] = useState(mockListings); 
+  const [listings, setListings] = useState([]); 
+  const [refreshing, setRefreshing] = useState(false);
+  const [listingLoading, setLoading] = useState(false);
 
+  const onRefresh = async () => {
+  try {
+    setRefreshing(true);
+    await fetchAll(); // reuse your existing function
+  } catch (error) {
+    console.log("Refresh error:", error);
+  } finally {
+    setRefreshing(false);
+  }
+};
+
+  const fetchAll = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchAllListings(user?.token as string);
+      console.log("Data:", data)
+      setListings(data);
+    } catch (error) {
+      console.log(error);
+    }finally{
+      setLoading(false);
+    }
+  }
+  useEffect(() => {
+    if(user?.token){
+      fetchAll();
+    }
+    
+  }, [user?.token]);
 
   if (loading) {
     return (
@@ -24,6 +57,15 @@ export default function HomeScreen() {
       </View>
     );
   }
+  if (listingLoading) {
+  return (
+    <SafeAreaView className="flex-1 items-center justify-center bg-zinc-100">
+      <ActivityIndicator size="large" color="#000" />
+      <Text className="mt-2 text-gray-600">Loading listings...</Text>
+    </SafeAreaView>
+  );
+}
+
 
   return (
     <SafeAreaView className="bg-zinc-100 flex-1">
@@ -36,8 +78,13 @@ export default function HomeScreen() {
         contentContainerStyle={{ paddingHorizontal: 14 }}
         columnWrapperStyle={{ justifyContent: "space-between", marginBottom: 10}}
         renderItem={({ item }) => (
-          <View className="relative w-[48%] mb-4 rounded-lg overflow-hidden col-span-1 mt-4">
-            <Image source={{ uri: item.image }} className="w-full h-40" />
+          <View className="relative w-[48%] mb-4  overflow-hidden col-span-1 mt-4">
+            <Image 
+            source={{ uri:item.images[0]}}  
+            className="w-full h-40"
+            style={{ width: "100%", height: 150, borderRadius:10}}
+            contentFit="cover" 
+           />
             <TouchableOpacity
               className="absolute top-2 right-2 bg-black/80 rounded-full p-2"
               onPress={() => console.log("Add to favourites")}
@@ -64,6 +111,8 @@ export default function HomeScreen() {
           // here you can fetch more listings when backend is ready
         }}
         onEndReachedThreshold={0.5}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
       />
     </SafeAreaView>
   );

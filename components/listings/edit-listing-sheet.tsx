@@ -17,7 +17,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import PasswordStrengthBar from "../form/password-strengthen-bar";
 import { ScrollView } from "react-native-gesture-handler";
 import * as ImagePicker from "expo-image-picker";
 import { list } from "firebase/storage";
@@ -33,7 +32,6 @@ export const EditListingSheet = ({ visible, onClose, listing, user, setUser}: an
     const conditions = ["New", "Like New", "Good", "Fair", "Poor"];
     const categories = ["Electronics", "Books", "Fashion", "Sports", "Home", "Other"];
     const [formData, setFormData] = useState<EditListingFormData>({});
-
 
     useEffect(() => {
         if (visible && listing) {

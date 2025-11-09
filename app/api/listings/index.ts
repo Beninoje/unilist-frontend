@@ -45,3 +45,17 @@ export const deleteListing = async (listingId:string, token:string) => {
     throw error.response?.data || { message: "Something went wrong" };
   }
 }
+export const fetchAllListings = async (token:string) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/all`,{
+      headers: {
+        "Authorization": `Bearer ${token}`, 
+        "Content-Type": "application/json",
+      },
+    });
+
+    return response.data;
+  } catch (error:any) {
+    throw error.response?.data || { message: "Something went wrong" };
+  }
+}
