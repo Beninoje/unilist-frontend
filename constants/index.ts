@@ -86,7 +86,7 @@ export const popularCategories = [
   { id: '3', name: 'Electronics', imageKey: 'electronics' },
   { id: '4', name: 'Clothes', imageKey: 'clothes' },
   { id: '5', name: 'Furniture', imageKey: 'furniture' },
-];
+]
 
 // mocks/listings.ts
 export const mockListings = Array.from({ length: 50 }).map((_, i) => ({

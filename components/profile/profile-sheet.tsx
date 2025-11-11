@@ -124,10 +124,17 @@ export const ProfileDrawer = ({ visible, onClose, user, token }: any) => {
 
           {/* Profile Image */}
           <View className="items-center mt-2">
-            <Image
+            <View className="w-28 h-28 rounded-full border-4 border-blue-400 bg-zinc-200 flex items-center justify-center">
+              <Text className="font-bold text-3xl text-zinc-700">
+                {user.firstName.charAt(0)}
+                {user.lastName.charAt(0)}
+              </Text>
+            </View>
+            
+            {/* <Image
               source={{ uri: user.avatar || "https://i.pravatar.cc/150?img=12" }}
               className="w-28 h-28 rounded-full border-4 border-blue-400"
-            />
+            /> */}
           </View>
 
           {/* Inputs */}
