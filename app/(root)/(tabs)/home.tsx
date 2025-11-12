@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { View, ActivityIndicator, FlatList, Text, TouchableOpacity } from "react-native";
-import { Image } from 'expo-image';
-import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
-import { getSession } from "@/utils/auth";
-import { UserProps } from "@/types/type";
-import { Header } from "@/components/navigation/header";
-import { SearchBar } from "@/components/form/search-bar";
-import { CategoriesSwiper } from "@/components/ui/categories-swiper";
-import { mockListings } from "@/constants";
-import { FontAwesome } from "@expo/vector-icons";
-import { useUser } from "@/hooks/context/user-context";
 import { fetchAllListings } from "@/app/api/listings";
+import { SearchBar } from "@/components/form/search-bar";
+import { Header } from "@/components/navigation/header";
+import { CategoriesSwiper } from "@/components/ui/categories-swiper";
+import { useUser } from "@/hooks/context/user-context";
+import { FontAwesome } from "@expo/vector-icons";
+import { Image } from 'expo-image';
+import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const {user, loading} = useUser();
@@ -78,16 +75,23 @@ export default function HomeScreen() {
         contentContainerStyle={{ paddingHorizontal: 14 }}
         columnWrapperStyle={{ justifyContent: "space-between", marginBottom: 10}}
         renderItem={({ item }) => (
-          <View className="relative w-[48%] mb-4  overflow-hidden col-span-1 mt-4">
+          <TouchableOpacity 
+            className="relative w-[48%] mb-4  overflow-hidden col-span-1 mt-4" 
+            onPress={() => router.push({ pathname: '/listing/[id]', params: { id: item.id, listing: JSON.stringify(item) } })}
+          >
             <Image 
-            source={{ uri:item.images[0]}}  
-            className="w-full h-40"
-            style={{ width: "100%", height: 150, borderRadius:10}}
-            contentFit="cover" 
+              source={{ uri:item.images[0]}}  
+              className="w-full h-40"
+              style={{ width: "100%", height: 150, borderRadius:10}}
+              contentFit="cover" 
            />
             <TouchableOpacity
+            
               className="absolute top-2 right-2 bg-black/80 rounded-full p-2"
-              onPress={() => console.log("Add to favourites")}
+              onPress={(e) => {
+                e.stopPropagation();
+                console.log("Add to favourites")
+              }}
             >
               <FontAwesome name="heart-o" size={18} color="white" />
             </TouchableOpacity>
@@ -96,7 +100,7 @@ export default function HomeScreen() {
               <Text className="text-gray-500">{item.title}</Text>
             </View>
 
-          </View>
+          </TouchableOpacity>
         )}
         ListHeaderComponent={
           <>

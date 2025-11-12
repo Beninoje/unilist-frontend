@@ -5,9 +5,8 @@ const Layout = () => {
   return (
     <UserProvider>
       <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="listing" options={{ headerShown: false }} />
-      </Stack>
+        <Stack.Screen name="[id]" options={{ headerShown: false }} />
+    </Stack>
     </UserProvider>
   );
 };

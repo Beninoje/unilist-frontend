@@ -59,3 +59,18 @@ export const fetchAllListings = async (token:string) => {
     throw error.response?.data || { message: "Something went wrong" };
   }
 }
+export const fetchListing = async (listingId:string, token:string) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/view/${listingId}`,{
+      headers: {
+        "Authorization": `Bearer ${token}`, 
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(response.data)
+
+    return response.data;
+  } catch (error:any) {
+    throw error.response?.data || { message: "Something went wrong" };
+  }
+}
