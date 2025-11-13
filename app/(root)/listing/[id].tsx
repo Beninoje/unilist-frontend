@@ -48,8 +48,10 @@ const ViewListingById = () => {
   if (listing) {
     const imageWidth = Math.max(width, 320);
     return (
-      <ScrollView className="flex-1 bg-white">
-        <ViewListingHeader />
+      <View className="flex-1 bg-white">
+      <ViewListingHeader />
+      <ScrollView className="">
+        
         <View className="relative">
         <ScrollView
           horizontal
@@ -150,6 +152,7 @@ const ViewListingById = () => {
           </View>
         </View>
       </ScrollView>
+      </View>
     );
   }
 

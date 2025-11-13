@@ -96,7 +96,7 @@ export default function HomeScreen() {
               <FontAwesome name="heart-o" size={18} color="white" />
             </TouchableOpacity>
             <View className="p-2">
-              <Text className="font-bold text-lg">{item.price}</Text>
+              <Text className="font-bold text-lg">CA${item.price}</Text>
               <Text className="text-gray-500">{item.title}</Text>
             </View>
 

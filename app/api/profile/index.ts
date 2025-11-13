@@ -11,7 +11,6 @@ export const updateProfile = async (body: UpdateUserFormData, token:string) => {
         "Content-Type": "application/json",
       },
     });
-    console.log(response.data)
     return response.data;
   } catch (error: any) {
     throw error.response?.data || { message: "Something went wrong" };
@@ -25,7 +24,20 @@ export const addToFavourites = async (listingId:BigInt, token:string) => {
         "Content-Type": "application/json",
       },
     });
-    console.log(response.data)
+    return response.data;
+  } catch (error: any) {
+    throw error.response?.data || { message: "Something went wrong" };
+  }
+}
+export const fetchAllFavourites = async (token:string) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/favourites/all`,{
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("Favourites: ",response.data)
     return response.data;
   } catch (error: any) {
     throw error.response?.data || { message: "Something went wrong" };

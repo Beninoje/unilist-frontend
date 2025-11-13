@@ -11,7 +11,6 @@ export const createListing = async (body: CreateListingFormData, token:string) =
         "Content-Type": "application/json",
       },
     });
-    console.log(response.data)
     return response.data;
   } catch (error: any) {
     throw error.response?.data || { message: "Something went wrong" };
@@ -25,7 +24,6 @@ export const editListing = async (listingId:string, body: EditListingFormData, t
         "Content-Type": "application/json",
       },
     });
-    console.log(response.data)
     return response.data;
   } catch (error: any) {
     throw error.response?.data || { message: "Something went wrong" };
@@ -39,7 +37,6 @@ export const deleteListing = async (listingId:string, token:string) => {
         "Content-Type": "application/json",
       },
     });
-    console.log(response.data)
     return response.data;
   } catch (error: any) {
     throw error.response?.data || { message: "Something went wrong" };
@@ -67,7 +64,6 @@ export const fetchListing = async (listingId:string, token:string) => {
         "Content-Type": "application/json",
       },
     });
-    console.log(response.data)
 
     return response.data;
   } catch (error:any) {
