@@ -19,7 +19,7 @@ const Item = ({ item, onSwipe, onEdit, user, setDeleting, setUser, activeSwipeab
           text: "Cancel",
           style: "cancel",
           onPress: () => {
-            localRef.current?.close(); // ✅ Close this swipeable when cancelled
+            localRef.current?.close(); 
           },
         },
         { text: "Delete", style: "destructive", onPress: handleDelete },
@@ -39,7 +39,7 @@ const Item = ({ item, onSwipe, onEdit, user, setDeleting, setUser, activeSwipeab
         };
       });
       localRef.current?.close();
-      onSwipe(); // notify parent to remove the item
+      onSwipe(); 
     } catch (error: any) {
       Alert.alert("Error", error.message);
     } finally {
@@ -86,17 +86,17 @@ const Item = ({ item, onSwipe, onEdit, user, setDeleting, setUser, activeSwipeab
       }}
       renderRightActions={renderRightActions}
     >
-      <View className="flex-row mb-2 bg-white rounded-lg overflow-hidden p-3 items-center gap-3">
+      <View className="flex-row mb-2 bg-zinc-50 rounded-lg overflow-hidden items-center gap-3 border border-zinc-100">
         <Image
           source={{ uri: item.images[0] }}
           className="w-20 h-20 rounded-md mr-3"
-          style={{ width: 80, height: 80, borderRadius: 10 }}
+          style={{ width: 100, height: 100, borderTopLeftRadius: 5, borderBottomLeftRadius: 5 }}
           contentFit="cover" 
         />
         <View className="flex-1">
           <View className="flex-row justify-between items-center">
             <Text className="font-semibold text-lg">${item.price}</Text>
-            <Text className="text-gray-500 text-xs">
+            <Text className="text-gray-500 text-xs pr-3">
               {item.createdAt ? getRelativeTime(item.createdAt) : ""}
             </Text>
           </View>
