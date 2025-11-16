@@ -16,19 +16,24 @@ export const updateProfile = async (body: UpdateUserFormData, token:string) => {
     throw error.response?.data || { message: "Something went wrong" };
   }
 };
-export const addToFavourites = async (listingId:BigInt, token:string) => {
+export const addToFavourites = async (listingId: BigInt, token: string) => {
+  console.log("User token in api call:", token);
   try {
-    const response = await axios.put(`${API_BASE_URL}/favourites/${listingId}`,{
-      headers: {
-        "Authorization": `Bearer ${token}`, 
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await axios.post(
+      `${API_BASE_URL}/favourites/${listingId}`,
+      null,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return response.data;
   } catch (error: any) {
     throw error.response?.data || { message: "Something went wrong" };
   }
-}
+};
 export const fetchAllFavourites = async (token:string) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/favourites/all`,{

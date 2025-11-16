@@ -1,4 +1,5 @@
 import { fetchAllListings } from "@/app/api/listings";
+import { addToFavourites } from "@/app/api/profile";
 import { SearchBar } from "@/components/form/search-bar";
 import { Header } from "@/components/navigation/header";
 import { CategoriesSwiper } from "@/components/ui/categories-swiper";
@@ -62,6 +63,14 @@ export default function HomeScreen() {
     </SafeAreaView>
   );
 }
+const handleAddToFavourites = async (listingId: BigInt, token: string) => {
+  try {
+    await addToFavourites(listingId, token);
+    console.log("Added to favourites");
+  } catch (error) {
+    console.log("Error adding to favourites:", error);
+  }
+}
 
 
   return (
@@ -86,12 +95,8 @@ export default function HomeScreen() {
               contentFit="cover" 
            />
             <TouchableOpacity
-            
               className="absolute top-2 right-2 bg-black/80 rounded-full p-2"
-              onPress={(e) => {
-                e.stopPropagation();
-                console.log("Add to favourites")
-              }}
+              onPress={() => handleAddToFavourites(item.id, user?.token as string)}
             >
               <FontAwesome name="heart-o" size={18} color="white" />
             </TouchableOpacity>

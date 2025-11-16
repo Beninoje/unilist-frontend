@@ -13,14 +13,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Favourites() {
     const [loading, setLoading] = useState(false);
-    const { user, setUser} = useUser();
+    const { user } = useUser();
     const [myFavourites, setMyFavourites] = useState<Listing[]>([]);
     const fetchAll = async () => {
         try {
             setLoading(true);
             const data = await fetchAllFavourites(user?.token as string);
             setMyFavourites(data);
-            console.log("Fetched Favourites: ", data);
         } catch (error) {
             console.log(error);
         } finally {
@@ -28,10 +27,9 @@ export default function Favourites() {
         }
     }
     useEffect(() => {
-        if(user?.token){
-            fetchAll();
-        }
-
+      if(user?.token){
+        fetchAll();
+      }
     }, [user?.token]);
     const renderItem = ({ item }: { item: Listing }) => (
         <TouchableOpacity 
