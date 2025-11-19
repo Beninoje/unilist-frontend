@@ -1,5 +1,5 @@
 import { fetchAllListings } from "@/app/api/listings";
-import { addToFavourites } from "@/app/api/profile";
+import { addToFavourites, fetchUser, removeFromFavourites } from "@/app/api/profile";
 import { SearchBar } from "@/components/form/search-bar";
 import { Header } from "@/components/navigation/header";
 import { CategoriesSwiper } from "@/components/ui/categories-swiper";
@@ -12,11 +12,11 @@ import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from "react
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  const {user, loading} = useUser();
+  const {user, loading, setSession, updateUser} = useUser();
   const [listings, setListings] = useState([]); 
   const [refreshing, setRefreshing] = useState(false);
   const [listingLoading, setLoading] = useState(false);
-
+  console.log("User Listings: ", user?.listings);
   const onRefresh = async () => {
   try {
     setRefreshing(true);
@@ -32,7 +32,6 @@ export default function HomeScreen() {
     try {
       setLoading(true);
       const data = await fetchAllListings(user?.token as string);
-      console.log("Data:", data)
       setListings(data);
     } catch (error) {
       console.log(error);
@@ -40,6 +39,7 @@ export default function HomeScreen() {
       setLoading(false);
     }
   }
+
   useEffect(() => {
     if(user?.token){
       fetchAll();
@@ -63,14 +63,42 @@ export default function HomeScreen() {
     </SafeAreaView>
   );
 }
-const handleAddToFavourites = async (listingId: BigInt, token: string) => {
+
+const refreshUser = async (token: string) => {
   try {
-    await addToFavourites(listingId, token);
-    console.log("Added to favourites");
+    const updatedUser = await fetchUser(token); // new API call
+
+    const newUser = {
+      ...updatedUser,
+      token  // always keep it!
+    };
+    
+    await updateUser(newUser);
+    if (token) await setSession(newUser, token);           
   } catch (error) {
-    console.log("Error adding to favourites:", error);
+    console.log("Error refreshing user:", error);
   }
-}
+};
+
+
+
+const handleToggleFavourite = async (listingId: BigInt) => {
+  const isFav = user?.favourites.includes(listingId);
+  
+  try {
+    if (isFav) {
+      console.log("Token:", user?.token);
+      await removeFromFavourites(listingId, user?.token as string);
+    } else {
+      console.log("Token:", user?.token);
+      await addToFavourites(listingId, user?.token as string);
+    }
+    await refreshUser(user?.token as string);
+  } catch (error) {
+    console.log("Error toggling favourite:", error);
+  }
+};
+
 
 
   return (
@@ -83,7 +111,9 @@ const handleAddToFavourites = async (listingId: BigInt, token: string) => {
         numColumns={2}
         contentContainerStyle={{ paddingHorizontal: 14 }}
         columnWrapperStyle={{ justifyContent: "space-between", marginBottom: 10}}
-        renderItem={({ item }) => (
+        renderItem={({ item }) => {
+          const isFav = user?.favourites.includes(item.id);
+          return (
           <TouchableOpacity 
             className="relative w-[48%] mb-4  overflow-hidden col-span-1 mt-4" 
             onPress={() => router.push({ pathname: '/listing/[id]', params: { id: item.id, listing: JSON.stringify(item) } })}
@@ -96,9 +126,9 @@ const handleAddToFavourites = async (listingId: BigInt, token: string) => {
            />
             <TouchableOpacity
               className="absolute top-2 right-2 bg-black/80 rounded-full p-2"
-              onPress={() => handleAddToFavourites(item.id, user?.token as string)}
+              onPress={() => handleToggleFavourite(item.id)}
             >
-              <FontAwesome name="heart-o" size={18} color="white" />
+              <FontAwesome name={isFav ? `heart` : `heart-o`} size={18} color={`${isFav ? "#60a5fa" : "white"}`} />
             </TouchableOpacity>
             <View className="p-2">
               <Text className="font-bold text-lg">CA${item.price}</Text>
@@ -106,7 +136,7 @@ const handleAddToFavourites = async (listingId: BigInt, token: string) => {
             </View>
 
           </TouchableOpacity>
-        )}
+        )}}
         ListHeaderComponent={
           <>
             <View className="">

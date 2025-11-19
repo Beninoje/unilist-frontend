@@ -83,7 +83,8 @@ export default function SignIn() {
         firstName: res.firstName,
         lastName: res.lastName,
         email: res.email,
-        listings: res.listings
+        listings: res.listings,
+        favourites: res.favourites
       }));
       await AsyncStorage.setItem('jwtExpiry', (Date.now() + res.expiresIn).toString());
 

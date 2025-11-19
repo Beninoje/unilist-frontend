@@ -5,7 +5,6 @@ import { useUser } from "@/hooks/context/user-context";
 import { Listing } from "@/types/type";
 import { Feather } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
-import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, FlatList, Modal, SafeAreaView, Text, View } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
@@ -22,6 +21,7 @@ export default function Listings() {
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
   const swipeableRef = useRef<Swipeable>(null);
   const [activeSwipeable, setActiveSwipeable] = useState<Swipeable | null>(null);
+
   useEffect(() => {
     if (user?.listings) {
       setMyListings(user.listings);
@@ -66,7 +66,8 @@ export default function Listings() {
           <FlatList
             data={myListings}
             renderItem={renderItem}
-            keyExtractor={(item) => item.id}
+            // ensure a stable string key — fall back to index if id missing
+            keyExtractor={(item, index) => (item && item.id != null ? String(item.id) : String(index))}
             contentContainerStyle={{ paddingBottom: 16 }}
           />
         )}

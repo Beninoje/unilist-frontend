@@ -32,7 +32,8 @@ export interface UserProps {
   lastName: string;
   email:string;
   token:string;
-  listings: Listing[];
+  listings: BigInt[];
+  favourites: BigInt[];
 } 
 
 interface Listing {

@@ -30,7 +30,7 @@ export default function Favourites() {
       if(user?.token){
         fetchAll();
       }
-    }, [user?.token]);
+    }, [user?.favourites]);
     const renderItem = ({ item }: { item: Listing }) => (
         <TouchableOpacity 
             className="relative w-[48%] mb-4  overflow-hidden col-span-1 mt-4 border border-zinc-200 rounded-xl" 

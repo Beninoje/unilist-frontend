@@ -1,11 +1,10 @@
 import { deleteListing } from "@/app/api/listings";
-import { UserProps } from "@/types/type";
 import { getRelativeTime } from "@/utils/listings";
 import { Feather } from "@expo/vector-icons";
+import { Image } from 'expo-image';
 import React, { useRef } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
-import { Image } from 'expo-image';
 
 const Item = ({ item, onSwipe, onEdit, user, setDeleting, setUser, activeSwipeable, setActiveSwipeable }: any) => {
   const localRef = useRef<Swipeable>(null);
@@ -88,10 +87,10 @@ const Item = ({ item, onSwipe, onEdit, user, setDeleting, setUser, activeSwipeab
     >
       <View className="flex-row mb-2 bg-zinc-50 rounded-lg overflow-hidden items-center gap-3 border border-zinc-100">
         <Image
-          source={{ uri: item.images[0] }}
+          source={{uri: item.images[0]}}
           className="w-20 h-20 rounded-md mr-3"
           style={{ width: 100, height: 100, borderTopLeftRadius: 5, borderBottomLeftRadius: 5 }}
-          contentFit="cover" 
+          contentFit="cover"
         />
         <View className="flex-1">
           <View className="flex-row justify-between items-center">
