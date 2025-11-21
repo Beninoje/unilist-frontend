@@ -168,7 +168,7 @@ export default function Create() {
     };  
 
     return (
-        <SafeAreaView className="flex-1 bg-gray-50">
+        <SafeAreaView className="flex-1 bg-gray-100">
             <Header user={user} title="Create Listing"/>
 
             <ScrollView className="flex-1 p-4 mb-12">
@@ -179,7 +179,8 @@ export default function Create() {
                             value={formData.title}
                             onChangeText={(text) => setFormData({...formData, title: text})}
                             placeholder="What are you selling?"
-                            className="bg-gray-50 p-3 rounded-lg border border-gray-200"
+                            placeholderTextColor="#9CA3AF"
+                            className="bg-gray-50 p-3 rounded-lg border border-gray-200 "
                         />
                     </View>
 
@@ -194,6 +195,7 @@ export default function Create() {
                                 setFormData({...formData, price: formatted});
                             }}
                             placeholder="0.00"
+                            placeholderTextColor="#9CA3AF"
                             keyboardType="decimal-pad"
                             className="bg-gray-50 p-3 rounded-lg border border-gray-200"
                         />
@@ -204,6 +206,7 @@ export default function Create() {
                             value={formData.description}
                             onChangeText={(text) => setFormData({...formData, description: text})}
                             placeholder="Describe your item..."
+                            placeholderTextColor="#9CA3AF"
                             multiline
                             numberOfLines={6}
                             className="bg-gray-50 p-3 h-32 rounded-lg border border-gray-200"

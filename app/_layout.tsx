@@ -24,7 +24,7 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{ headerShown: false }}/>
       </Stack>
       </GestureHandlerRootView> 
-      <StatusBar style="auto" />
+      <StatusBar style="dark" />
       </SafeAreaProvider>
     </ThemeProvider>
   );

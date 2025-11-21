@@ -1,11 +1,11 @@
 import { UpdateUserFormData } from "@/types/type";
+import { API_BASE_URL } from "@/utils/api-config/api-config";
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:8080/users"; // replace with your backend URL
 
 export const fetchUser = async (token:string) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/me`,{
+    const response = await axios.get(`${API_BASE_URL}/users/me`,{
       headers: {
         "Authorization": `Bearer ${token}`, 
         "Content-Type": "application/json",
@@ -18,7 +18,7 @@ export const fetchUser = async (token:string) => {
 }
 export const updateProfile = async (body: UpdateUserFormData, token:string) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/update`, body,{
+    const response = await axios.put(`${API_BASE_URL}/users/update`, body,{
       headers: {
         "Authorization": `Bearer ${token}`, 
         "Content-Type": "application/json",
@@ -33,7 +33,7 @@ export const addToFavourites = async (listingId: BigInt, token: string) => {
   console.log("User token in api call:", token);
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/favourites/${listingId}`,
+      `${API_BASE_URL}/users/favourites/${listingId}`,
       null,
       {
         headers: {
@@ -50,7 +50,7 @@ export const addToFavourites = async (listingId: BigInt, token: string) => {
 export const removeFromFavourites = async (listingId: BigInt, token: string) => {
   try {
     const response = await axios.delete(
-      `${API_BASE_URL}/favourites/${listingId}`,
+      `${API_BASE_URL}/users/favourites/${listingId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -65,13 +65,27 @@ export const removeFromFavourites = async (listingId: BigInt, token: string) => 
 };
 export const fetchAllFavourites = async (token:string) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/favourites/all`,{
+    const response = await axios.get(`${API_BASE_URL}/users/favourites/all`,{
       headers: {
         "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
     console.log("Favourites: ",response.data)
+    return response.data;
+  } catch (error: any) {
+    throw error.response?.data || { message: "Something went wrong" };
+  }
+}
+export const fetchAllUserListings = async (token:string) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/users/listings/all`,{
+      headers: {
+        "Authorization": `Bearer ${token}`, 
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("User Listings: ",response.data)
     return response.data;
   } catch (error: any) {
     throw error.response?.data || { message: "Something went wrong" };

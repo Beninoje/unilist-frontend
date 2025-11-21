@@ -13,20 +13,21 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const {user, loading, setSession, updateUser} = useUser();
-  const [listings, setListings] = useState([]); 
+  const [listings, setListings] = useState<any[]>([]); 
   const [refreshing, setRefreshing] = useState(false);
   const [listingLoading, setLoading] = useState(false);
   console.log("User Listings: ", user?.listings);
+  
   const onRefresh = async () => {
-  try {
-    setRefreshing(true);
-    await fetchAll(); // reuse your existing function
-  } catch (error) {
-    console.log("Refresh error:", error);
-  } finally {
-    setRefreshing(false);
-  }
-};
+    try {
+      setRefreshing(true);
+      await fetchAll(); // reuse your existing function
+    } catch (error) {
+      console.log("Refresh error:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const fetchAll = async () => {
     try {
@@ -67,14 +68,18 @@ export default function HomeScreen() {
 const refreshUser = async (token: string) => {
   try {
     const updatedUser = await fetchUser(token); // new API call
+    if (!updatedUser) {
+      console.log('fetchUser returned falsy value:', updatedUser);
+      return;
+    }
 
     const newUser = {
       ...updatedUser,
-      token  // always keep it!
+      token, // always keep it!
     };
-    
+
     await updateUser(newUser);
-    if (token) await setSession(newUser, token);           
+    if (token) await setSession(newUser, token);
   } catch (error) {
     console.log("Error refreshing user:", error);
   }
@@ -82,8 +87,8 @@ const refreshUser = async (token: string) => {
 
 
 
-const handleToggleFavourite = async (listingId: BigInt) => {
-  const isFav = user?.favourites.includes(listingId);
+const handleToggleFavourite = async (listingId: any) => {
+  const isFav = !!user?.favourites?.includes(listingId);
   
   try {
     if (isFav) {
@@ -103,7 +108,7 @@ const handleToggleFavourite = async (listingId: BigInt) => {
 
   return (
     <SafeAreaView className="bg-zinc-100 flex-1">
-      <Header user={user}/>
+      <Header user={user as any} />
       <FlatList
         data={listings}
         keyExtractor={(item, index) => `${item.id}-${index}`}
@@ -112,7 +117,7 @@ const handleToggleFavourite = async (listingId: BigInt) => {
         contentContainerStyle={{ paddingHorizontal: 14 }}
         columnWrapperStyle={{ justifyContent: "space-between", marginBottom: 10}}
         renderItem={({ item }) => {
-          const isFav = user?.favourites.includes(item.id);
+          const isFav = !!user?.favourites?.includes(item.id);
           return (
           <TouchableOpacity 
             className="relative w-[48%] mb-4  overflow-hidden col-span-1 mt-4" 

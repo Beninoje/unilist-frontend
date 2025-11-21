@@ -1,5 +1,4 @@
 import { AntDesign, FontAwesome, Ionicons, Octicons } from "@expo/vector-icons";
-import { BlurView } from 'expo-blur';
 import { Tabs } from "expo-router";
 import React from "react";
 import { Image, Platform, View } from "react-native";
@@ -40,33 +39,19 @@ export default function Layout() {
         tabBarStyle: { 
           position: "absolute",
           height: 80,
-          backgroundColor: 'transparent',
-          borderTopWidth: 0,
           elevation: 0,
           paddingTop: 0,
-          shadowOffset: { width: 0, height: -1 },
-          shadowColor: '#000',
-          shadowOpacity: 0.05,
-          shadowRadius: 2,
+          shadowColor: 'transparent',
+          shadowOpacity: 0,
+          shadowRadius: 0,
+          borderTopWidth: 1,
+          borderTopColor: "#e5e7eb",
+          backgroundColor: "#f4f4f5",
         },
         tabBarBackground: () => (
-          Platform.OS === 'ios' ? (
-            <BlurView
-              tint="default"
-              intensity={50}
-              style={{
-                width: '100%',
-                height: '100%',
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: 'transparent',
-              }}
-              className="z-[100]"
-            />
-          ) : null
+          // Disable BlurView to avoid desaturating the white background.
+          // Return null so the `tabBarStyle.backgroundColor` renders as-is.
+          null
         ),
         tabBarItemStyle: {
           marginTop: Platform.OS === 'ios' ? 0 : 20,

@@ -31,7 +31,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const updateUser = async (updated: Partial<UserProps> | UserProps) => {
     try {
       setUser((prev) => {
-        const merged = { ...(prev as UserProps || {}), ...(updated as UserProps) } as UserProps;
+        const merged = { ...(prev as UserProps || {}), ...((updated as UserProps) || {}) } as UserProps;
         AsyncStorage.setItem("user", JSON.stringify(merged)).catch((e) =>
           console.warn('Failed to persist updated user:', e)
         );
