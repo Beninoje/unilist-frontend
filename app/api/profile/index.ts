@@ -1,4 +1,4 @@
-import { UpdateUserFormData } from "@/types/type";
+import { Listing, UpdateUserFormData } from "@/types/type";
 import { API_BASE_URL } from "@/utils/api-config/api-config";
 import axios from "axios";
 
@@ -77,7 +77,7 @@ export const fetchAllFavourites = async (token:string) => {
     throw error.response?.data || { message: "Something went wrong" };
   }
 }
-export const fetchAllUserListings = async (token:string) => {
+export const fetchAllUserListings = async (token:string) : Promise<Listing[]>  => {
   try {
     const response = await axios.get(`${API_BASE_URL}/users/listings/all`,{
       headers: {
