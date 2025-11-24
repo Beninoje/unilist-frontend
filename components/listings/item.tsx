@@ -137,7 +137,7 @@ const Item = ({ item, onSwipe, onEdit, user, setDeleting, setUser, activeSwipeab
           <Text
             className={`text-sm mt-1 font-semibold ${
               item.status === "active"
-                ? "text-green-600 bg-green-50 rounded-lg px-1 py-0.5 w-14"
+                ? "text-green-600 bg-green-100 rounded-lg px-1 py-0.5 w-14"
                 : item.status === "sold"
                 ? "text-gray-600"
                 : "text-orange-500"

@@ -36,3 +36,13 @@ export const getRelativeTime = (dateString: string): string => {
     return `${years} ${years === 1 ? 'year' : 'years'} ago`;
   }
 }
+
+export const imagesEqual = (imgs1: string[] | undefined, imgs2: string[] | undefined) : boolean => {
+  if (!imgs1 && !imgs2) return true;
+  if(!imgs1 || !imgs2) return false;
+  if (imgs1.length !== imgs2.length) return false;
+  for(let i =0; i<imgs1.length; i++){
+    if(imgs1[i] !== imgs2[i]) return false;
+  }
+  return true;
+}
