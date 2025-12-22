@@ -1,4 +1,4 @@
-const MODE = "production"; 
+const MODE = "development"; 
 
 export const API_BASE_URL =
   MODE === "development"

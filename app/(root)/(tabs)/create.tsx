@@ -103,10 +103,15 @@ export default function Create() {
             
             try {
                 const response = await createListing(submissionData, user.token);
+                console.log("Server response:", response);
 
-                // setUser((prev)=>prev ? { ...prev, listings: response } : prev)
+                // Log the response for debugging
+                console.log("Full server response:", response);
 
-                queryClient.invalidateQueries({ queryKey: ['userListings', user?.token] });
+                                // Update the user's state with the response from the backend
+                setUser((prev)=>prev ? { ...prev, listings: response } : prev)
+
+                // Consider it a success if we get a response and there's no error
                 if (response && !response.error) {
                     Alert.alert(
                         "Success!",
@@ -118,6 +123,7 @@ export default function Create() {
                             }
                         ]
                     );
+
 
                 } else {
                     console.error("Server response indicates failure:", response);
@@ -148,15 +154,7 @@ export default function Create() {
                 ]
             );
         } finally {
-            setIsSubmitting(false);
-            setFormData({
-                title: "",
-                price: "",
-                description: "",
-                category: "",
-                condition: ""
-            });
-            setImages([]);
+            
         }
     };  
 
