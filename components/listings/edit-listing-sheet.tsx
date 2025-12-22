@@ -31,14 +31,16 @@ export const EditListingSheet = ({ visible, onClose, listing, user, setUser}: an
     useEffect(() => {
         if (visible && listing) {
             const listingImages = Array.isArray(listing.images) ? listing.images : [listing.images].flat();
+            
             setFormData({
-            title: listing.title,
-            price: listing.price,
-            description: listing.description,
-            condition: listing.condition,
-            category: listing.category,
-            images: listingImages,
+                title: listing.title,
+                price: listing.price,
+                description: listing.description,
+                condition: listing.condition,
+                category: listing.category,
+                images: listingImages,
             });
+
             setImages(listingImages || []);
         } else if (!visible) {
             setFormData({
