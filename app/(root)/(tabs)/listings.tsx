@@ -25,7 +25,7 @@ export default function Listings() {
     queryKey: ["userListings", user?.token],
     queryFn: () => fetchAllUserListings(user?.token as string),
     enabled: !!user?.token,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000, 
   });
 
   const onRefresh = async () => {

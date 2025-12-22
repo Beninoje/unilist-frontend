@@ -16,12 +16,11 @@ export default function HomeScreen() {
   const [listings, setListings] = useState<any[]>([]); 
   const [refreshing, setRefreshing] = useState(false);
   const [listingLoading, setLoading] = useState(false);
-  console.log("User Listings: ", user?.listings);
   
   const onRefresh = async () => {
     try {
       setRefreshing(true);
-      await fetchAll(); // reuse your existing function
+      await fetchAll(); 
     } catch (error) {
       console.log("Refresh error:", error);
     } finally {
@@ -75,7 +74,7 @@ const refreshUser = async (token: string) => {
 
     const newUser = {
       ...updatedUser,
-      token, // always keep it!
+      token, 
     };
 
     await updateUser(newUser);
@@ -87,24 +86,20 @@ const refreshUser = async (token: string) => {
 
 
 
-const handleToggleFavourite = async (listingId: any) => {
-  const isFav = !!user?.favourites?.includes(listingId);
-  
-  try {
-    if (isFav) {
-      console.log("Token:", user?.token);
-      await removeFromFavourites(listingId, user?.token as string);
-    } else {
-      console.log("Token:", user?.token);
-      await addToFavourites(listingId, user?.token as string);
+  const handleToggleFavourite = async (listingId: any) => {
+    const isFav = !!user?.favourites?.includes(listingId);
+    
+    try {
+      if (isFav) {
+        await removeFromFavourites(listingId, user?.token as string);
+      } else {
+        await addToFavourites(listingId, user?.token as string);
+      }
+      await refreshUser(user?.token as string);
+    } catch (error) {
+      console.log("Error toggling favourite:", error);
     }
-    await refreshUser(user?.token as string);
-  } catch (error) {
-    console.log("Error toggling favourite:", error);
-  }
-};
-
-
+  };
 
   return (
     <SafeAreaView className="bg-zinc-100 flex-1">

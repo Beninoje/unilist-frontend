@@ -5,6 +5,7 @@ import { CreateListingFormData } from "@/types/type";
 import { uploadImage } from "@/utils/firebase/imageUpload";
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useQueryClient } from "@tanstack/react-query";
 import { BlurView } from "expo-blur";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
@@ -24,7 +25,7 @@ export default function Create() {
     const {user, loading, setUser} = useUser();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [images, setImages] = useState<string[]>([]);
-
+    const queryClient = useQueryClient();
     const [formData, setFormData] = useState<FormData>({
         title: "",
         price: "",
@@ -67,10 +68,10 @@ export default function Create() {
                 return;
             }
 
-            // Start loading state
+            
             setIsSubmitting(true);
 
-            // Upload all images
+            
             const uploadPromises = images.map(async (imageUri) => {
                 const response = await fetch(imageUri);
                 const blob = await response.blob();
@@ -96,24 +97,16 @@ export default function Create() {
                 images: uploadedImageUrls.filter((url): url is string => url !== null)
             };
 
-            // Check if user is authenticated
-            if (!user?.token) {
-                throw new Error("You must be logged in to create a listing");
-            }
+            
 
             console.log("Starting listing creation with data:", submissionData);
             
             try {
                 const response = await createListing(submissionData, user.token);
-                console.log("Server response:", response);
 
-                // Log the response for debugging
-                console.log("Full server response:", response);
+                // setUser((prev)=>prev ? { ...prev, listings: response } : prev)
 
-                                // Update the user's state with the response from the backend
-                setUser((prev)=>prev ? { ...prev, listings: response } : prev)
-
-                // Consider it a success if we get a response and there's no error
+                queryClient.invalidateQueries({ queryKey: ['userListings', user?.token] });
                 if (response && !response.error) {
                     Alert.alert(
                         "Success!",
