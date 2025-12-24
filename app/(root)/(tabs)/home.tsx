@@ -10,6 +10,7 @@ import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as Haptics from "expo-haptics";
 
 export default function HomeScreen() {
   const {user, loading, setSession, updateUser} = useUser();
@@ -91,8 +92,10 @@ const refreshUser = async (token: string) => {
     
     try {
       if (isFav) {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         await removeFromFavourites(listingId, user?.token as string);
       } else {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         await addToFavourites(listingId, user?.token as string);
       }
       await refreshUser(user?.token as string);

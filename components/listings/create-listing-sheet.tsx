@@ -157,11 +157,19 @@ export const  CreateListingSheet = ({ visible, onClose }: any) => {
                         [
                             {
                                 text: "OK",
-                                onPress: () => router.back()
+                                onPress: () => onClose(),
                             }
                         ]
                     );
-
+                    setFormData({
+                        title: "",
+                        price: "",
+                        description: "",
+                        category: "",
+                        condition: ""
+                    });
+                    setImages([]);
+                    setIsSubmitting(false);
 
                 } else {
                     console.error("Server response indicates failure:", response);

@@ -37,7 +37,7 @@ export interface UserProps {
 } 
 
 interface Listing {
-  id: string;
+  id: BigInt;
   title: string;
   price: Double;
   image: any;
