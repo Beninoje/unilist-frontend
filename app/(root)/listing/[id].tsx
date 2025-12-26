@@ -9,8 +9,11 @@ import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import * as Haptics from "expo-haptics";
+import { addToFavourites, fetchUser, removeFromFavourites } from "@/app/api/profile";
+
 const ViewListingById = () => {
-  const {user} = useUser();
+  const {user, setSession, updateUser} = useUser();
   const params = useLocalSearchParams<{ id: string;}>();
   const [loading, setLoading] = useState(false);
   const [listing, setListing] = useState<any>(null);
@@ -37,6 +40,43 @@ const ViewListingById = () => {
     }
   }, [id, user?.token]);
 
+  const handleToggleFavourite = async (listingId: any) => {
+      const isFav = !!user?.favourites?.includes(listingId);
+      
+      try {
+        if (isFav) {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          await removeFromFavourites(listingId, user?.token as string);
+        } else {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          await addToFavourites(listingId, user?.token as string);
+        }
+        await refreshUser(user?.token as string);
+      } catch (error) {
+        console.log("Error toggling favourite:", error);
+      }
+    };
+
+    const refreshUser = async (token: string) => {
+      try {
+        const updatedUser = await fetchUser(token); // new API call
+        if (!updatedUser) {
+          console.log('fetchUser returned falsy value:', updatedUser);
+          return;
+        }
+    
+        const newUser = {
+          ...updatedUser,
+          token, 
+        };
+    
+        await updateUser(newUser);
+        if (token) await setSession(newUser, token);
+      } catch (error) {
+        console.log("Error refreshing user:", error);
+      }
+    };
+
 
   if(loading){
     return (
@@ -45,6 +85,7 @@ const ViewListingById = () => {
       </View>
     );
   }
+
   if (listing) {
     const imageWidth = Math.max(width, 320);
     return (
@@ -97,9 +138,10 @@ const ViewListingById = () => {
                 placeholder="Hello is this available?"
                 multiline
                 numberOfLines={4}
-                className="bg-gray-200 px-3 py-2 h-24 rounded-lg border border-gray-300 text-zinc-800 mt-2"
+                className="bg-gray-100 px-3 py-2 h-24 rounded-lg border border-gray-300 text-zinc-800 mt-2"
                 style={{ width: '100%' }}
                 textAlignVertical="top"
+                placeholderTextColor="#27272a"
               />
               <TouchableOpacity
                 className="bg-blue-500 rounded-lg px-4 py-3 mt-3 items-center"
@@ -141,11 +183,8 @@ const ViewListingById = () => {
           <View className="">
             <TouchableOpacity
             
-              className="absolute right-1 top-1 bg-black/40 rounded-full p-2"
-              onPress={(e) => {
-                e.stopPropagation();
-                console.log("Add to favourites")
-              }}
+              className="absolute right-1 top-1 bg-black/80 rounded-full p-2"
+              onPress={() => handleToggleFavourite(listing.id)}
             >
               <FontAwesome name="heart-o" size={18} color="white" />
             </TouchableOpacity>

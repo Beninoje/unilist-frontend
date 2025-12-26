@@ -11,91 +11,76 @@ import React, { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
+import { Listing } from "@/types/type";
 
 export default function HomeScreen() {
   const {user, loading, setSession, updateUser} = useUser();
-  const [listings, setListings] = useState<any[]>([]); 
+  const [listings, setListings] = useState<Listing[]>([]); 
   const [refreshing, setRefreshing] = useState(false);
-  const [listingLoading, setLoading] = useState(false);
-  
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+
   const onRefresh = async () => {
     try {
       setRefreshing(true);
-      await fetchAll(); 
-    } catch (error) {
-      console.log("Refresh error:", error);
+      const data = await fetchAllListings(user!.token, 0);
+      setListings(data.content);
+      setHasMore(!data.last);
+      setPage(1);
+    } catch (e) {
+      console.log(e);
     } finally {
       setRefreshing(false);
     }
   };
 
-  const fetchAll = async () => {
+  const fetchMore = async () => {
+    if (loadingMore || !hasMore || initialLoading) return;
+
     try {
-      setLoading(true);
-      const data = await fetchAllListings(user?.token as string);
-      setListings(data);
+      setLoadingMore(true);
+      const data = await fetchAllListings(user!.token, page);
+      setListings(prev => [...prev, ...data.content]);
+      setHasMore(!data.last);
+      setPage(prev => prev + 1);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  const refreshUser = async (token: string) => {
+    try {
+      const updatedUser = await fetchUser(token); // new API call
+      if (!updatedUser) {
+        console.log('fetchUser returned falsy value:', updatedUser);
+        return;
+      }
+
+      const newUser = {
+        ...updatedUser,
+        token, 
+      };
+
+      await updateUser(newUser);
+      if (token) await setSession(newUser, token);
     } catch (error) {
-      console.log(error);
-    }finally{
-      setLoading(false);
+      console.log("Error refreshing user:", error);
     }
-  }
-
-  useEffect(() => {
-    if(user?.token){
-      fetchAll();
-    }
-    
-  }, [user?.token]);
-
-  if (loading) {
-    return (
-      <View className="flex-1 items-center justify-center">
-        <ActivityIndicator size="large" color="#000" />
-        <Text>Loading session...</Text>
-      </View>
-    );
-  }
-  if (listingLoading) {
-  return (
-    <SafeAreaView className="flex-1 items-center justify-center bg-zinc-100">
-      <ActivityIndicator size="large" color="#000" />
-      <Text className="mt-2 text-gray-600">Loading listings...</Text>
-    </SafeAreaView>
-  );
-}
-
-const refreshUser = async (token: string) => {
-  try {
-    const updatedUser = await fetchUser(token); // new API call
-    if (!updatedUser) {
-      console.log('fetchUser returned falsy value:', updatedUser);
-      return;
-    }
-
-    const newUser = {
-      ...updatedUser,
-      token, 
-    };
-
-    await updateUser(newUser);
-    if (token) await setSession(newUser, token);
-  } catch (error) {
-    console.log("Error refreshing user:", error);
-  }
-};
-
-
+  };
 
   const handleToggleFavourite = async (listingId: any) => {
     const isFav = !!user?.favourites?.includes(listingId);
     
     try {
       if (isFav) {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         await removeFromFavourites(listingId, user?.token as string);
       } else {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         await addToFavourites(listingId, user?.token as string);
       }
       await refreshUser(user?.token as string);
@@ -104,13 +89,44 @@ const refreshUser = async (token: string) => {
     }
   };
 
+  useEffect(() => {
+    if (!user?.token) return;
+    fetchInitial();
+  }, [user?.token]);
+
+  const fetchInitial = async () => {
+    try {
+      setInitialLoading(true);
+      const data = await fetchAllListings(user!.token, 0);
+      console.log("Fetched initial listings:", data);
+      setListings(data.content);
+      setHasMore(!data.last);
+      setPage(1);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setInitialLoading(false);
+    }
+  };
+  if (loading) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" color="#000" />
+        <Text>Loading session...</Text>
+      </View>
+    );
+  }
+
+
+
   return (
     <SafeAreaView className="bg-zinc-100 flex-1">
       <Header user={user as any} />
+      <SearchBar />
       <FlatList
         data={listings}
-        keyExtractor={(item, index) => `${item.id}-${index}`}
-        className="mb-14 pt-6"
+        keyExtractor={(item) => item.id.toString()}
+        className="mb-14 pt-0"
         numColumns={2}
         contentContainerStyle={{ paddingHorizontal: 14 }}
         columnWrapperStyle={{ justifyContent: "space-between", marginBottom: 10}}
@@ -143,18 +159,25 @@ const refreshUser = async (token: string) => {
         ListHeaderComponent={
           <>
             <View className="">
-              <SearchBar />
+              
               <CategoriesSwiper />
               <Text className="pt-8 text-2xl font-bold">More picks for you</Text>
             </View>
           </>
         }
         onEndReached={() => {
-          // here you can fetch more listings when backend is ready
+          fetchMore();
         }}
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={0.4}
         refreshing={refreshing}
         onRefresh={onRefresh}
+        ListFooterComponent={
+          loadingMore ? (
+            <View style={{ paddingVertical: 20 }}>
+              <ActivityIndicator size="small" color={"#0e0e0e"} />
+            </View>
+          ) : null
+        }
       />
     </SafeAreaView>
   );

@@ -55,7 +55,7 @@ export default function Favourites() {
         // setMyFavourites((prev)=> prev.filter((listing) => listing.id !== listingId))
         
         try {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
           await removeFromFavourites(listingId, user?.token as string);
           await refreshUser(user?.token as string);
         

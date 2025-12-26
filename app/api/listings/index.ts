@@ -43,9 +43,9 @@ export const deleteListing = async (listingId:string, token:string) => {
     throw error.response?.data || { message: "Something went wrong" };
   }
 }
-export const fetchAllListings = async (token:string) => {
+export const fetchAllListings = async (token:string, page:number) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/listing/all`,{
+      const response = await axios.get(`${API_BASE_URL}/listing/all?size=4&page=${page}`,{
       headers: {
         "Authorization": `Bearer ${token}`, 
         "Content-Type": "application/json",
