@@ -40,6 +40,7 @@
     "firebase": "^12.4.0",
     "install": "^0.13.0",
     "jwt-decode": "^4.0.0",
+    "lucide-react": "^0.562.0",
     "moti": "^0.30.0",
     "nativewind": "^4.2.1",
     "npm": "^11.6.2",
