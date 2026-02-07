@@ -28,19 +28,20 @@ export interface UpdateUserFormData{
   email?:string;
 }
 export interface UserProps {
+  id: string;
   firstName: string;
   lastName: string;
   email:string;
   token:string;
-  listings: BigInt[];
-  favourites: BigInt[];
+  listings: string[];
+  favourites: string[];
 } 
 
-interface Listing {
-  id: BigInt;
+export interface Listing {
+  id: string;
   title: string;
   price: Double;
-  image: any;
+  images: string[];
   status: "active" | "sold" | "draft";
   category?: string;
   condition?: string;

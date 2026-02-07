@@ -11,17 +11,17 @@ import { ScrollView, Text, TouchableOpacity, View, useWindowDimensions } from "r
 import { TextInput } from "react-native-gesture-handler";
 import * as Haptics from "expo-haptics";
 import { addToFavourites, fetchUser, removeFromFavourites } from "@/app/api/profile";
+import { useFavourites } from "@/hooks/context/favourite-context";
 
 const ViewListingById = () => {
-  const {user, setSession, updateUser} = useUser();
+  const {user, setSession, updateUser,isFavourite, toggleFavourite} = useUser();
   const params = useLocalSearchParams<{ id: string;}>();
   const [loading, setLoading] = useState(false);
   const [listing, setListing] = useState<any>(null);
   const { width } = useWindowDimensions();
   const [activeIndex, setActiveIndex] = useState(0);
-  const { id } = params as { id?: string; };
 
-  
+  const { id } = params as { id?: string; };
 
   const fetchListingById = async (listingId: string) => {
     try {
@@ -34,49 +34,13 @@ const ViewListingById = () => {
       setLoading(false);
     }
   }
+
   useEffect(() => {
     if (id && user?.token) {
       fetchListingById(id);
     }
   }, [id, user?.token]);
-
-  const handleToggleFavourite = async (listingId: any) => {
-      const isFav = !!user?.favourites?.includes(listingId);
-      
-      try {
-        if (isFav) {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-          await removeFromFavourites(listingId, user?.token as string);
-        } else {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-          await addToFavourites(listingId, user?.token as string);
-        }
-        await refreshUser(user?.token as string);
-      } catch (error) {
-        console.log("Error toggling favourite:", error);
-      }
-    };
-
-    const refreshUser = async (token: string) => {
-      try {
-        const updatedUser = await fetchUser(token); // new API call
-        if (!updatedUser) {
-          console.log('fetchUser returned falsy value:', updatedUser);
-          return;
-        }
-    
-        const newUser = {
-          ...updatedUser,
-          token, 
-        };
-    
-        await updateUser(newUser);
-        if (token) await setSession(newUser, token);
-      } catch (error) {
-        console.log("Error refreshing user:", error);
-      }
-    };
-
+  
 
   if(loading){
     return (
@@ -135,6 +99,7 @@ const ViewListingById = () => {
             <View className="w-full flex flex-col pt-3">
               <Text>Send seller a message</Text>
               <TextInput
+                value="Hello is this available?"
                 placeholder="Hello is this available?"
                 multiline
                 numberOfLines={4}
@@ -184,9 +149,9 @@ const ViewListingById = () => {
             <TouchableOpacity
             
               className="absolute right-1 top-1 bg-black/80 rounded-full p-2"
-              onPress={() => handleToggleFavourite(listing.id)}
+              onPress={() => toggleFavourite(id!.toString())}
             >
-              <FontAwesome name="heart-o" size={18} color="white" />
+              <FontAwesome name={isFavourite(id!.toString()) ? `heart` : `heart-o`} size={18} color={`${isFavourite(id!.toString()) ? "#60a5fa" : "white"}`} />
             </TouchableOpacity>
           </View>
         </View>

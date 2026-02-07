@@ -29,7 +29,7 @@ export const updateProfile = async (body: UpdateUserFormData, token:string) => {
     throw error.response?.data || { message: "Something went wrong" };
   }
 };
-export const addToFavourites = async (listingId: BigInt, token: string) => {
+export const addToFavourites = async (listingId: string, token: string) => {
   console.log("User token in api call:", token);
   try {
     const response = await axios.post(
@@ -47,7 +47,7 @@ export const addToFavourites = async (listingId: BigInt, token: string) => {
     throw error.response?.data || { message: "Something went wrong" };
   }
 };
-export const removeFromFavourites = async (listingId: BigInt, token: string) => {
+export const removeFromFavourites = async (listingId: string, token: string) => {
   try {
     const response = await axios.delete(
       `${API_BASE_URL}/users/favourites/${listingId}`,

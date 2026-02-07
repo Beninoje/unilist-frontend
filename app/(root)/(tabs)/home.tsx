@@ -12,9 +12,11 @@ import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from "react
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import { Listing } from "@/types/type";
+import { useFavourites } from "@/hooks/context/favourite-context";
+import item from "@/components/listings/item";
 
 export default function HomeScreen() {
-  const {user, loading, setSession, updateUser} = useUser();
+  const {user, loading, setSession, updateUser, isFavourite, toggleFavourite} = useUser();
   const [listings, setListings] = useState<Listing[]>([]); 
   const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(0);
@@ -52,53 +54,17 @@ export default function HomeScreen() {
     }
   };
 
-  const refreshUser = async (token: string) => {
-    try {
-      const updatedUser = await fetchUser(token); // new API call
-      if (!updatedUser) {
-        console.log('fetchUser returned falsy value:', updatedUser);
-        return;
-      }
-
-      const newUser = {
-        ...updatedUser,
-        token, 
-      };
-
-      await updateUser(newUser);
-      if (token) await setSession(newUser, token);
-    } catch (error) {
-      console.log("Error refreshing user:", error);
-    }
-  };
-
-  const handleToggleFavourite = async (listingId: any) => {
-    const isFav = !!user?.favourites?.includes(listingId);
-    
-    try {
-      if (isFav) {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        await removeFromFavourites(listingId, user?.token as string);
-      } else {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        await addToFavourites(listingId, user?.token as string);
-      }
-      await refreshUser(user?.token as string);
-    } catch (error) {
-      console.log("Error toggling favourite:", error);
-    }
-  };
-
+  console.log(user)
+  
   useEffect(() => {
-    if (!user?.token) return;
-    fetchInitial();
-  }, [user?.token]);
+  if (!user?.token) return;
+  fetchInitial();
+}, [user?.token]);
 
   const fetchInitial = async () => {
     try {
       setInitialLoading(true);
       const data = await fetchAllListings(user!.token, 0);
-      console.log("Fetched initial listings:", data);
       setListings(data.content);
       setHasMore(!data.last);
       setPage(1);
@@ -131,11 +97,11 @@ export default function HomeScreen() {
         contentContainerStyle={{ paddingHorizontal: 14 }}
         columnWrapperStyle={{ justifyContent: "space-between", marginBottom: 10}}
         renderItem={({ item }) => {
-          const isFav = !!user?.favourites?.includes(item.id);
+          const isFav = isFavourite(item.id.toString());
           return (
           <TouchableOpacity 
             className="relative w-[48%] mb-4  overflow-hidden col-span-1 mt-4" 
-            onPress={() => router.push({ pathname: '/listing/[id]', params: { id: item.id, listing: JSON.stringify(item) } })}
+            onPress={() => router.push({ pathname: '/listing/[id]', params: { id: item.id.toString(), listing: JSON.stringify(item) } })}
           >
             <Image 
               source={{ uri:item.images[0]}}  
@@ -145,7 +111,7 @@ export default function HomeScreen() {
            />
             <TouchableOpacity
               className="absolute top-2 right-2 bg-black/80 rounded-full p-2"
-              onPress={() => handleToggleFavourite(item.id)}
+              onPress={() => toggleFavourite(item.id.toString())}
             >
               <FontAwesome name={isFav ? `heart` : `heart-o`} size={18} color={`${isFav ? "#60a5fa" : "white"}`} />
             </TouchableOpacity>
@@ -178,6 +144,8 @@ export default function HomeScreen() {
             </View>
           ) : null
         }
+        extraData={user?.favourites}
+
       />
     </SafeAreaView>
   );

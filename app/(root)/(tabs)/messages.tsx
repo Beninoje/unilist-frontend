@@ -4,6 +4,8 @@ import { Feather, Ionicons } from "@expo/vector-icons";
 import { FlatList } from "react-native-gesture-handler";
 import { MessageItem } from "@/components/messages/message-item";
 import { mockMessages } from "@/constants";
+import { router } from "expo-router";
+import { Image } from "expo-image";
 export default function Messages() {
     return (
         <SafeAreaView className="bg-zinc-100 flex-1">
@@ -39,7 +41,35 @@ export default function Messages() {
                     keyExtractor={(item) => item.conversationId.toString()}
                     className="mb-14 pt-0"
                     contentContainerStyle={{flexDirection: "column", justifyContent: "space-between", alignItems: "start", paddingHorizontal: 14}}
-                    renderItem={({ item }) => <MessageItem message={item} />}
+                    renderItem={({ item }) => {
+                            const time = new Date(item.date).toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                            });
+                        return (
+                            <TouchableOpacity 
+                                className='py-3 border-b border-zinc-200' 
+                                onPress={() => router.push(
+                                    { 
+                                        pathname: '/chat/[id]', 
+                                        params: { id: item.conversationId, message:JSON.stringify(item)} 
+                                    })}
+                            >
+                                <View className='w-full flex-row justify-between items-start'>
+                                    <View className='flex-row justify-start items-center gap-4'>
+                                        <Image source={{ uri: item.profileImage }} style={{ width: 50, height: 50, borderRadius: 100 }} />
+                                        <View>
+                                            <Text className='text-lg font-semibold'>{item.name}</Text>
+                                            <Text className='text-sm text-zinc-600'>{item.lastMessage}</Text>
+                        
+                                        </View>
+                                    </View>
+                                    <View>
+                                        <Text className='text-sm font-semibold'>{time}</Text>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                    )}}
                     
             />
 

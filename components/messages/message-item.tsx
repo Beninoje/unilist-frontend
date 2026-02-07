@@ -1,9 +1,11 @@
 import { Image } from 'expo-image';
+import { router } from 'expo-router';
 import { Text, Touchable, TouchableOpacity, View } from 'react-native';
 type Props = {
     message: MessageItemProps
 }
 interface MessageItemProps {
+    conversationId:string;
     name:string;
     profileImage:string;
     lastMessage:string;
@@ -14,9 +16,8 @@ export function MessageItem({message}:Props) {
   hour: '2-digit',
   minute: '2-digit',
 });
-console.log('Rendering MessageItem with message:', time);
   return (
-    <TouchableOpacity className='py-3 border-b border-zinc-200'>
+    <TouchableOpacity className='py-3 border-b border-zinc-200' onPress={() => router.push({ pathname: '/chat/[id]', params: { id: message.conversationId, message: JSON.stringify(message) } })}>
         <View className='w-full flex-row justify-between items-start'>
             <View className='flex-row justify-start items-center gap-4'>
                 <Image source={{ uri: message.profileImage }} style={{ width: 50, height: 50, borderRadius: 100 }} />
