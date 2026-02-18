@@ -1,51 +1,48 @@
-
-import { updateProfile } from "@/app/api/profile";
-import { EditListingFormData, UpdateUserFormData, UpdateUserFormErrors } from "@/types/type";
-import { signOut } from "@/utils/auth";
+import { editListing } from "@/app/api/listings";
+import { EditListingFormData } from "@/types/type";
+import { imagesEqual } from "@/utils/listings";
 import { Feather, Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
+import * as ImagePicker from "expo-image-picker";
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Alert,
-  Animated,
-  Dimensions,
-  Image,
-  Modal,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Alert,
+    Animated,
+    Dimensions,
+    Image,
+    Modal,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import * as ImagePicker from "expo-image-picker";
-import { list } from "firebase/storage";
-import { editListing } from "@/app/api/listings";
 
 const { height } = Dimensions.get("window");
 
 export const EditListingSheet = ({ visible, onClose, listing, user, setUser}: any) => {
     const slideAnim = useRef(new Animated.Value(height)).current;
     const [isVisible, setIsVisible] = useState(false);
-    const [images, setImages] = useState<string[]>([listing.images].flat());
+    const [images, setImages] = useState<string[]>([]);
     const [errors, setErrors] = useState<EditListingFormData>({});
     const conditions = ["New", "Like New", "Good", "Fair", "Poor"];
     const categories = ["Electronics", "Books", "Fashion", "Sports", "Home", "Other"];
     const [formData, setFormData] = useState<EditListingFormData>({});
-
+    
     useEffect(() => {
         if (visible && listing) {
-            // Populate form when opening
+            const listingImages = Array.isArray(listing.images) ? listing.images : [listing.images].flat();
+            
             setFormData({
-            title: listing.title,
-            price: listing.price,
-            description: listing.description,
-            condition: listing.condition,
-            category: listing.category,
-            images: listing.images || [],
+                title: listing.title,
+                price: listing.price,
+                description: listing.description,
+                condition: listing.condition,
+                category: listing.category,
+                images: listingImages,
             });
+
+            setImages(listingImages || []);
         } else if (!visible) {
-            // Clear form when closing
             setFormData({
             title: "",
             price: 0,
@@ -54,17 +51,18 @@ export const EditListingSheet = ({ visible, onClose, listing, user, setUser}: an
             category: "",
             images: [],
             });
+            setImages([]);
         }
     }, [visible, listing]);
     
 
     const hasChanges =
-        formData.title !== listing.title ||
-        formData.price !== listing.price ||
-        formData.description !== listing.description ||
-        formData.condition !== listing.condition ||
-        formData.category !== listing.category ||
-        formData.images !== listing.images
+  (formData.title ?? '') !== (listing?.title ?? '') ||
+  Number(formData.price ?? 0) !== Number(listing?.price ?? 0) ||
+  (formData.description ?? '') !== (listing?.description ?? '') ||
+  (formData.condition ?? '') !== (listing?.condition ?? '') ||
+  (formData.category ?? '') !== (listing?.category ?? '') ||
+  !imagesEqual(images, listing.images ?? []);
 
 
   useEffect(() => {
@@ -145,7 +143,6 @@ export const EditListingSheet = ({ visible, onClose, listing, user, setUser}: an
 
         const response = await editListing(listing.id, body, user.token);
 
-        console.log("Edited listing:", response);
         setUser((current:any)=>{
             if (!current) return current;
             return {
@@ -170,6 +167,30 @@ export const EditListingSheet = ({ visible, onClose, listing, user, setUser}: an
       Alert.alert("Error", error.message);
     }
   };
+
+  const handleOnClose = () => {
+    if(hasChanges){
+        Alert.alert(
+            "Discard Changes?", 
+            "Are you sure you want to close without saving?", 
+            [
+                {
+                    text: "Cancel", 
+                    style: "cancel",
+                },
+                {
+                    text: "Yes, Close", 
+                    onPress: () => {
+                        onClose();
+                    }, 
+                    style: "destructive",
+                },
+            ]
+        )
+    }else{
+        onClose();
+    }
+}
   
 
   if (!isVisible) return null;
@@ -177,42 +198,43 @@ export const EditListingSheet = ({ visible, onClose, listing, user, setUser}: an
   return (
     <Modal visible={true} transparent animationType="none" onRequestClose={onClose}>
       <View className="flex-1 bg-black/50 justify-end">
-        <Animated.View
-          style={{
-            transform: [{ translateY: slideAnim }],
-            height: "100%",
-            backgroundColor: "#f9fafb",
-            padding: 20,
-            paddingTop: 70,
-          }}
-        >
-          {/* Header */}
-          <View className="flex-row justify-between items-center">
-            <TouchableOpacity onPress={()=>{
-                Alert.alert(
-                "Discard Changes?", // Title
-                "Are you sure you want to close without saving?", // Message
-                [
-                    {
-                    text: "Cancel", // Cancel button
-                    style: "cancel",
-                    },
-                    {
-                    text: "Yes, Close", // Confirm button
-                    onPress: () => {
-                        onClose();
-                    }, // Only close if confirmed
-                    style: "destructive",
-                    },
-                ]
-                );
-            }}>
-              <Ionicons name="close" size={28} color="black" />
-            </TouchableOpacity>
-            <Text className="text-black font-semibold text-lg">Edit Listing</Text>
-            <View style={{ width: 28 }} /> 
-          </View>
-          <ScrollView className="">
+                <Animated.View
+                    style={{
+                        transform: [{ translateY: slideAnim }],
+                        height: "100%",
+                        backgroundColor: "#f9fafb",
+                        paddingHorizontal:20,
+                        paddingTop: 40,
+                        paddingBottom:20
+                    }}
+                >
+                    {/* Sticky header positioned at the very top of the modal */}
+                    <View style={{
+                            position: 'absolute',
+                            top: 50,
+                            left: 0,
+                            right: 0,
+                            zIndex: 5,
+                            backgroundColor: '#f9fafb',
+                            paddingHorizontal: 20,
+                            paddingTop: 16,
+                            paddingBottom: 12,
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#e5e7eb'
+                        }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <TouchableOpacity onPress={handleOnClose}
+                            className=""
+                            >
+                                <Ionicons name="close" size={28} color="black" />
+                            </TouchableOpacity>
+                            <Text style={{ fontSize: 16, fontWeight: '600', color: '#000' }}>Edit Listing</Text>
+                            <View style={{ width: 28 }} /> 
+                        </View>
+                    </View>
+
+                    {/* Give the ScrollView a top margin equal to header height so content starts below it */}
+                    <ScrollView className="" style={{ marginTop: 64 }}>
                 <View className="space-y-4 mt-6">
                         <View>
                             <Text className="text-gray-700  text-lg font-semibold">Title <Text className="text-red-500">*</Text></Text>

@@ -100,3 +100,117 @@ export const mockListings = Array.from({ length: 50 }).map((_, i) => ({
   },
 }));
 
+export const mockMessages = [
+  {
+    "conversationId": "c1",
+    "userId": 101,
+    "name": "Alex Johnson",
+    "profileImage": "https://randomuser.me/api/portraits/men/32.jpg",
+    "lastMessage": "Hey, is this still available?",
+    "date": "2025-01-10T14:32:00Z"
+  },
+  {
+    "conversationId": "c2",
+    "userId": 102,
+    "name": "Maria Gonzalez",
+    "profileImage": "https://randomuser.me/api/portraits/women/45.jpg",
+    "lastMessage": "Can you do $120 for it?",
+    "date": "2025-01-10T13:18:00Z"
+  },
+  {
+    "conversationId": "c3",
+    "userId": 103,
+    "name": "Daniel Smith",
+    "profileImage": "https://randomuser.me/api/portraits/men/76.jpg",
+    "lastMessage": "I can pick it up tomorrow morning.",
+    "date": "2025-01-09T19:44:00Z"
+  },
+  {
+    "conversationId": "c4",
+    "userId": 104,
+    "name": "Sophia Lee",
+    "profileImage": "https://randomuser.me/api/portraits/women/12.jpg",
+    "lastMessage": "Thanks! See you then 👍",
+    "date": "2025-01-09T16:02:00Z"
+  },
+  {
+    "conversationId": "c5",
+    "userId": 105,
+    "name": "Michael Brown",
+    "profileImage": "https://randomuser.me/api/portraits/men/18.jpg",
+    "lastMessage": "Is the price negotiable?",
+    "date": "2025-01-08T21:27:00Z"
+  },
+  {
+    "conversationId": "c6",
+    "userId": 106,
+    "name": "Emily Carter",
+    "profileImage": "https://randomuser.me/api/portraits/women/29.jpg",
+    "lastMessage": "I’ve sent the payment.",
+    "date": "2025-01-08T10:55:00Z"
+  },
+  {
+    "conversationId": "c7",
+    "userId": 107,
+    "name": "Ryan Wilson",
+    "profileImage": "https://randomuser.me/api/portraits/men/54.jpg",
+    "lastMessage": "Can you ship it?",
+    "date": "2025-01-07T18:41:00Z"
+  },
+  {
+    "conversationId": "c8",
+    "userId": 108,
+    "name": "Olivia Martin",
+    "profileImage": "https://randomuser.me/api/portraits/women/67.jpg",
+    "lastMessage": "Perfect, I’ll take it.",
+    "date": "2025-01-07T09:12:00Z"
+  },
+  {
+    "conversationId": "c9",
+    "userId": 103,
+    "name": "Daniel Smith",
+    "profileImage": "https://randomuser.me/api/portraits/men/76.jpg",
+    "lastMessage": "I can pick it up tomorrow morning.",
+    "date": "2025-01-09T19:44:00Z"
+  },
+  {
+    "conversationId": "c10",
+    "userId": 104,
+    "name": "Sophia Lee",
+    "profileImage": "https://randomuser.me/api/portraits/women/12.jpg",
+    "lastMessage": "Thanks! See you then 👍",
+    "date": "2025-01-09T16:02:00Z"
+  },
+  {
+    "conversationId": "c11",
+    "userId": 105,
+    "name": "Michael Brown",
+    "profileImage": "https://randomuser.me/api/portraits/men/18.jpg",
+    "lastMessage": "Is the price negotiable?",
+    "date": "2025-01-08T21:27:00Z"
+  },
+  {
+    "conversationId": "c12",
+    "userId": 106,
+    "name": "Emily Carter",
+    "profileImage": "https://randomuser.me/api/portraits/women/29.jpg",
+    "lastMessage": "I’ve sent the payment.",
+    "date": "2025-01-08T10:55:00Z"
+  },
+  {
+    "conversationId": "c13",
+    "userId": 107,
+    "name": "Ryan Wilson",
+    "profileImage": "https://randomuser.me/api/portraits/men/54.jpg",
+    "lastMessage": "Can you ship it?",
+    "date": "2025-01-07T18:41:00Z"
+  },
+  {
+    "conversationId": "c14",
+    "userId": 108,
+    "name": "Olivia Martin",
+    "profileImage": "https://randomuser.me/api/portraits/women/67.jpg",
+    "lastMessage": "Perfect, I’ll take it.",
+    "date": "2025-01-07T09:12:00Z"
+  }
+]

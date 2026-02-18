@@ -9,16 +9,19 @@ import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import * as Haptics from "expo-haptics";
+import { addToFavourites, fetchUser, removeFromFavourites } from "@/app/api/profile";
+import { useFavourites } from "@/hooks/context/favourite-context";
+
 const ViewListingById = () => {
-  const {user} = useUser();
+  const {user, setSession, updateUser,isFavourite, toggleFavourite} = useUser();
   const params = useLocalSearchParams<{ id: string;}>();
   const [loading, setLoading] = useState(false);
   const [listing, setListing] = useState<any>(null);
   const { width } = useWindowDimensions();
   const [activeIndex, setActiveIndex] = useState(0);
-  const { id } = params as { id?: string; };
 
-  
+  const { id } = params as { id?: string; };
 
   const fetchListingById = async (listingId: string) => {
     try {
@@ -31,12 +34,13 @@ const ViewListingById = () => {
       setLoading(false);
     }
   }
+
   useEffect(() => {
     if (id && user?.token) {
       fetchListingById(id);
     }
   }, [id, user?.token]);
-
+  
 
   if(loading){
     return (
@@ -45,6 +49,7 @@ const ViewListingById = () => {
       </View>
     );
   }
+
   if (listing) {
     const imageWidth = Math.max(width, 320);
     return (
@@ -94,12 +99,14 @@ const ViewListingById = () => {
             <View className="w-full flex flex-col pt-3">
               <Text>Send seller a message</Text>
               <TextInput
+                value="Hello is this available?"
                 placeholder="Hello is this available?"
                 multiline
                 numberOfLines={4}
-                className="bg-gray-200 px-3 py-2 h-24 rounded-lg border border-gray-300 text-zinc-800 mt-2"
+                className="bg-gray-100 px-3 py-2 h-24 rounded-lg border border-gray-300 text-zinc-800 mt-2"
                 style={{ width: '100%' }}
                 textAlignVertical="top"
+                placeholderTextColor="#27272a"
               />
               <TouchableOpacity
                 className="bg-blue-500 rounded-lg px-4 py-3 mt-3 items-center"
@@ -141,13 +148,10 @@ const ViewListingById = () => {
           <View className="">
             <TouchableOpacity
             
-              className="absolute right-1 top-1 bg-black/40 rounded-full p-2"
-              onPress={(e) => {
-                e.stopPropagation();
-                console.log("Add to favourites")
-              }}
+              className="absolute right-1 top-1 bg-black/80 rounded-full p-2"
+              onPress={() => toggleFavourite(id!.toString())}
             >
-              <FontAwesome name="heart-o" size={18} color="white" />
+              <FontAwesome name={isFavourite(id!.toString()) ? `heart` : `heart-o`} size={18} color={`${isFavourite(id!.toString()) ? "#60a5fa" : "white"}`} />
             </TouchableOpacity>
           </View>
         </View>

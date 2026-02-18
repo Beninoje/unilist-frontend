@@ -1,3 +1,8 @@
+import { API_BASE_URL } from "@/utils/api-config/api-config";
+import axios from "axios";
+
+;
+
 import { apiRequest } from "@/utils/api-client/api-client";
 
 // export const signUp = async (data: {
@@ -19,18 +24,24 @@ export const signUp = async (data: {
   email: string;
   password: string;
 }) => { 
-  try {
-    return await apiRequest("POST", "/auth/signup", data);
-  } catch (error: any) {
-    throw error.response?.data || { message: "Something went wrong" };
-  }
+
+
+    try {
+      return await apiRequest("POST", "/auth/signup", data);
+    } catch (error: any) {
+      throw error.response?.data || { message: "Something went wrong" };
+    }
 };
 
+
 export const login = async (data: { email: string; password: string }) => {
-  
-    return apiRequest("POST", "/auth/login", data);
-  
-};  
+
+    try {
+      return await apiRequest("POST", "/auth/login", data);
+    } catch (error: any) {
+      throw error.response?.data || { message: "Something went wrong" };
+    }
+};
 
 //     console.warn("Localhost failed, switching to NGROK...");
 //     try {
@@ -43,9 +54,9 @@ export const login = async (data: { email: string; password: string }) => {
    
 // };
 export const verifyOTP = async (payload:any) => {
-  try {
-    return await apiRequest("POST", "/auth/verify", payload);
-  } catch (error:any) {
-    throw error.response?.data || { message: "Something went wrong" };
-  }
+   try {
+      return await apiRequest("POST", "/auth/verify", payload);
+    } catch (error: any) {
+      throw error.response?.data || { message: "Something went wrong" };
+    }
 };

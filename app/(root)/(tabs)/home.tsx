@@ -10,43 +10,70 @@ import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as Haptics from "expo-haptics";
+import { Listing } from "@/types/type";
+import { useFavourites } from "@/hooks/context/favourite-context";
+import item from "@/components/listings/item";
 
 export default function HomeScreen() {
-  const {user, loading, setSession, updateUser} = useUser();
-  const [listings, setListings] = useState([]); 
+  const {user, loading, setSession, updateUser, isFavourite, toggleFavourite} = useUser();
+  const [listings, setListings] = useState<Listing[]>([]); 
   const [refreshing, setRefreshing] = useState(false);
-  const [listingLoading, setLoading] = useState(false);
-  console.log("User Listings: ", user?.listings);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+
   const onRefresh = async () => {
-  try {
-    setRefreshing(true);
-    await fetchAll(); // reuse your existing function
-  } catch (error) {
-    console.log("Refresh error:", error);
-  } finally {
-    setRefreshing(false);
-  }
-};
-
-  const fetchAll = async () => {
     try {
-      setLoading(true);
-      const data = await fetchAllListings(user?.token as string);
-      setListings(data);
-    } catch (error) {
-      console.log(error);
-    }finally{
-      setLoading(false);
+      setRefreshing(true);
+      const data = await fetchAllListings(user!.token, 0);
+      setListings(data.content);
+      setHasMore(!data.last);
+      setPage(1);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setRefreshing(false);
     }
-  }
+  };
 
+  const fetchMore = async () => {
+    if (loadingMore || !hasMore || initialLoading) return;
+
+    try {
+      setLoadingMore(true);
+      const data = await fetchAllListings(user!.token, page);
+      setListings(prev => [...prev, ...data.content]);
+      setHasMore(!data.last);
+      setPage(prev => prev + 1);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  console.log(user)
+  
   useEffect(() => {
-    if(user?.token){
-      fetchAll();
-    }
-    
-  }, [user?.token]);
+  if (!user?.token) return;
+  fetchInitial();
+}, [user?.token]);
 
+  const fetchInitial = async () => {
+    try {
+      setInitialLoading(true);
+      const data = await fetchAllListings(user!.token, 0);
+      setListings(data.content);
+      setHasMore(!data.last);
+      setPage(1);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setInitialLoading(false);
+    }
+  };
   if (loading) {
     return (
       <View className="flex-1 items-center justify-center">
@@ -55,68 +82,26 @@ export default function HomeScreen() {
       </View>
     );
   }
-  if (listingLoading) {
-  return (
-    <SafeAreaView className="flex-1 items-center justify-center bg-zinc-100">
-      <ActivityIndicator size="large" color="#000" />
-      <Text className="mt-2 text-gray-600">Loading listings...</Text>
-    </SafeAreaView>
-  );
-}
-
-const refreshUser = async (token: string) => {
-  try {
-    const updatedUser = await fetchUser(token); // new API call
-
-    const newUser = {
-      ...updatedUser,
-      token  // always keep it!
-    };
-    
-    await updateUser(newUser);
-    if (token) await setSession(newUser, token);           
-  } catch (error) {
-    console.log("Error refreshing user:", error);
-  }
-};
-
-
-
-const handleToggleFavourite = async (listingId: BigInt) => {
-  const isFav = user?.favourites.includes(listingId);
-  
-  try {
-    if (isFav) {
-      console.log("Token:", user?.token);
-      await removeFromFavourites(listingId, user?.token as string);
-    } else {
-      console.log("Token:", user?.token);
-      await addToFavourites(listingId, user?.token as string);
-    }
-    await refreshUser(user?.token as string);
-  } catch (error) {
-    console.log("Error toggling favourite:", error);
-  }
-};
 
 
 
   return (
     <SafeAreaView className="bg-zinc-100 flex-1">
-      <Header user={user}/>
+      <Header user={user as any} />
+      <SearchBar />
       <FlatList
         data={listings}
-        keyExtractor={(item, index) => `${item.id}-${index}`}
-        className="mb-14 pt-6"
+        keyExtractor={(item) => item.id.toString()}
+        className="mb-14 pt-0"
         numColumns={2}
         contentContainerStyle={{ paddingHorizontal: 14 }}
         columnWrapperStyle={{ justifyContent: "space-between", marginBottom: 10}}
         renderItem={({ item }) => {
-          const isFav = user?.favourites.includes(item.id);
+          const isFav = isFavourite(item.id.toString());
           return (
           <TouchableOpacity 
             className="relative w-[48%] mb-4  overflow-hidden col-span-1 mt-4" 
-            onPress={() => router.push({ pathname: '/listing/[id]', params: { id: item.id, listing: JSON.stringify(item) } })}
+            onPress={() => router.push({ pathname: '/listing/[id]', params: { id: item.id.toString(), listing: JSON.stringify(item) } })}
           >
             <Image 
               source={{ uri:item.images[0]}}  
@@ -126,7 +111,7 @@ const handleToggleFavourite = async (listingId: BigInt) => {
            />
             <TouchableOpacity
               className="absolute top-2 right-2 bg-black/80 rounded-full p-2"
-              onPress={() => handleToggleFavourite(item.id)}
+              onPress={() => toggleFavourite(item.id.toString())}
             >
               <FontAwesome name={isFav ? `heart` : `heart-o`} size={18} color={`${isFav ? "#60a5fa" : "white"}`} />
             </TouchableOpacity>
@@ -140,18 +125,27 @@ const handleToggleFavourite = async (listingId: BigInt) => {
         ListHeaderComponent={
           <>
             <View className="">
-              <SearchBar />
+              
               <CategoriesSwiper />
               <Text className="pt-8 text-2xl font-bold">More picks for you</Text>
             </View>
           </>
         }
         onEndReached={() => {
-          // here you can fetch more listings when backend is ready
+          fetchMore();
         }}
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={0.4}
         refreshing={refreshing}
         onRefresh={onRefresh}
+        ListFooterComponent={
+          loadingMore ? (
+            <View style={{ paddingVertical: 20 }}>
+              <ActivityIndicator size="small" color={"#0e0e0e"} />
+            </View>
+          ) : null
+        }
+        extraData={user?.favourites}
+
       />
     </SafeAreaView>
   );

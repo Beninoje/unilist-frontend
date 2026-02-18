@@ -3,11 +3,11 @@ import { Stack } from "expo-router";
 
 const Layout = () => {
   return (
-    // <UserProvider>
+    <UserProvider>
       <Stack>
         <Stack.Screen name="[id]" options={{ headerShown: false }} />
     </Stack>
-    // </UserProvider>
+    </UserProvider>
   );
 };
 
