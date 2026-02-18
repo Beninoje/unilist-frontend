@@ -118,9 +118,9 @@ export default function SignUp() {
         password: formData.password,
       }
       
-      const res = await signUp(payload);
-      
-      console.log(res);
+      const res:any = await signUp(payload);
+
+      console.log("Response from signUp: ", res);
       setVerification({
         ...verification,
         state:"pending"
